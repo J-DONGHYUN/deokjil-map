@@ -11,10 +11,8 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#101215' },
-  ],
+  // 라이트 전용 — 기기 설정과 무관하게 같은 톤을 보여준다
+  themeColor: '#fffafc',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

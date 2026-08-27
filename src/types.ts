@@ -64,6 +64,12 @@ export interface EventItem {
   perks?: string
   /** 음료 1잔 주문 등 */
   conditions?: string
+  /**
+   * 대표 이미지. 주최자·운영사가 공개한 안내 이미지의 URL.
+   * 없거나 로드에 실패하면 대상명 기반 색 블록으로 폴백한다(EventCard 참조).
+   * 원문 링크(source_url)를 항상 함께 노출해 출처를 밝힌다.
+   */
+  image_url?: string
   /** 원문 링크. 출처 표기 필수 — 화면에서 반드시 노출한다 */
   source_url: string
   trust: Trust

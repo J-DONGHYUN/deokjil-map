@@ -1,124 +1,128 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import events from '@/data/events.json'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import rawEvents from '@/data/events.json'
 import type { EventItem } from '@/types'
 import {
   DEFAULT_FILTER,
-  DISTRICT_LABELS,
-  EVENT_KIND_LABELS,
   availableDistricts,
-  filterEvents,
-  periodLabel,
   todayKey,
-  weekendRange,
-  type DateFilter,
   type DistrictFilter,
   type FilterState,
 } from '@/lib/filters'
+import BottomNav, { type Tab } from '@/components/BottomNav'
+import HomeView from '@/components/HomeView'
+import ListView from '@/components/ListView'
+import SearchOverlay from '@/components/SearchOverlay'
 
-const ALL_EVENTS = events as EventItem[]
+const ALL_EVENTS = rawEvents as EventItem[]
 
-const DATE_LABELS: Record<DateFilter, string> = {
-  today: '오늘',
-  weekend: '이번 주말',
-  all: '전체',
-}
-
-export default function Home() {
+export default function Page() {
   // 오늘 날짜는 클라이언트에서만 확정한다.
-  // 서버 프리렌더 시점(빌드 시각)과 사용자 시각이 다르면 하이드레이션이 어긋난다.
+  // 서버 프리렌더 시점(빌드 시각)을 쓰면 배포 다음날부터 하이드레이션이 어긋난다.
   const [today, setToday] = useState<string | null>(null)
+  const [tab, setTab] = useState<Tab>('home')
   const [filter, setFilter] = useState<FilterState>(DEFAULT_FILTER)
+  const [searchOpen, setSearchOpen] = useState(false)
 
   useEffect(() => setToday(todayKey()), [])
 
   const districts = useMemo(() => availableDistricts(ALL_EVENTS), [])
-  const visible = useMemo(
-    () => (today ? filterEvents(ALL_EVENTS, filter, today) : []),
-    [filter, today],
+
+  const setField = useCallback(
+    <K extends keyof FilterState>(key: K, value: FilterState[K]) =>
+      setFilter((f) => ({ ...f, [key]: value })),
+    [],
   )
 
-  const set = <K extends keyof FilterState>(key: K, value: FilterState[K]) =>
-    setFilter((f) => ({ ...f, [key]: value }))
+  // 상세는 4단계(해시 라우팅)에서 붙는다. 지금은 계측 자리만 잡아둔다
+  const openDetail = useCallback((id: string) => {
+    console.info('[view_detail]', id)
+  }, [])
+
+  const goList = useCallback((district: DistrictFilter) => {
+    setFilter((f) => ({ ...f, district }))
+    setTab('list')
+  }, [])
+
+  const goMap = useCallback((district: DistrictFilter) => {
+    setFilter((f) => ({ ...f, district }))
+    setTab('map')
+  }, [])
 
   return (
     <div className="app">
       <header className="header">
-        <h1 className="header__title">오늘 뭐 열려?</h1>
-        <p className="header__sub">서울 생카 · 팝업</p>
+        <div className="header__row">
+          <div className="header__text">
+            <h1 className="header__title">오늘 뭐 열려?</h1>
+            <p className="header__sub">서울 생카 · 팝업 · 굿즈 현황</p>
+          </div>
+          <button
+            type="button"
+            className="header__search"
+            aria-label="검색"
+            onClick={() => setSearchOpen(true)}
+          >
+            검색
+          </button>
+        </div>
       </header>
 
       <main className="main">
         {!today ? (
           <p className="placeholder">불러오는 중…</p>
+        ) : tab === 'home' ? (
+          <HomeView
+            events={ALL_EVENTS}
+            today={today}
+            date={filter.date}
+            kind={filter.kind}
+            onDate={(v) => setField('date', v)}
+            onKind={(v) => setField('kind', v)}
+            onOpen={openDetail}
+            onDistrictMore={goList}
+            onDistrictMap={goMap}
+          />
+        ) : tab === 'list' ? (
+          <ListView
+            events={ALL_EVENTS}
+            today={today}
+            districts={districts}
+            filter={filter}
+            onFilter={setField}
+            onOpen={openDetail}
+          />
         ) : (
-          <>
-            <div className="debug">
-              2단계 검증용 화면 · 전체 {ALL_EVENTS.length}건 · 오늘 {today} · 주말{' '}
-              {weekendRange(today).join(' ~ ')}
-            </div>
-
-            <div className="chips">
-              {(Object.keys(DATE_LABELS) as DateFilter[]).map((d) => (
-                <button
-                  key={d}
-                  className={`chip ${filter.date === d ? 'chip--on' : ''}`}
-                  onClick={() => set('date', d)}
-                >
-                  {DATE_LABELS[d]}
-                </button>
-              ))}
-            </div>
-
-            <div className="chips">
-              {(['all', ...districts] as DistrictFilter[]).map((d) => (
-                <button
-                  key={d}
-                  className={`chip ${filter.district === d ? 'chip--on' : ''}`}
-                  onClick={() => set('district', d)}
-                >
-                  {d === 'all' ? '전 지역' : DISTRICT_LABELS[d]}
-                </button>
-              ))}
-            </div>
-
-            <input
-              className="search"
-              value={filter.query}
-              placeholder="대상 · 카페명 검색"
-              onChange={(e) => set('query', e.target.value)}
-            />
-
-            <p className="count">{visible.length}건</p>
-
-            <ul className="rawlist">
-              {visible.map((ev) => (
-                <li key={ev.id} className="rawitem">
-                  <div className="rawitem__top">
-                    <span className="tag">{EVENT_KIND_LABELS[ev.kind]}</span>
-                    <strong>{ev.subject}</strong>
-                    <span className="tag tag--period">{periodLabel(ev, today)}</span>
-                  </div>
-                  <div className="rawitem__sub">
-                    {DISTRICT_LABELS[ev.place.district]} · {ev.place.name} · {ev.open_hours}
-                  </div>
-                  <div className="rawitem__sub">
-                    {ev.starts_on} ~ {ev.ends_on}
-                    {ev.goods.length > 0 && ` · 굿즈 ${ev.goods.length}품목`}
-                  </div>
-                </li>
-              ))}
-            </ul>
-
-            {visible.length === 0 && (
-              <p className="placeholder">조건에 맞는 이벤트가 없습니다.</p>
-            )}
-          </>
+          <p className="placeholder">
+            지도는 카카오 JS 키 도메인 등록 후 붙습니다.
+            <br />
+            그 전까지는 전체 목록을 이용해주세요.
+          </p>
         )}
       </main>
 
-      <footer className="footer">주최자 공지 기반 · 방문 전 원문 확인 권장</footer>
+      <footer className="footer">
+        <p>주최자 공지 기반 · 방문 전 원문 확인 권장</p>
+        <p className="footer__notice">
+          모든 정보는 출처를 표기하며 원문으로 연결됩니다.
+          게시를 원치 않으시는 권리자께서는 알려주시면 즉시 내리겠습니다.
+        </p>
+      </footer>
+
+      <BottomNav active={tab} onChange={setTab} />
+
+      {searchOpen && today && (
+        <SearchOverlay
+          events={ALL_EVENTS}
+          today={today}
+          onClose={() => setSearchOpen(false)}
+          onOpen={(id) => {
+            setSearchOpen(false)
+            openDetail(id)
+          }}
+        />
+      )}
     </div>
   )
 }

@@ -1,40 +1,47 @@
-/* ── 토큰 ─────────────────────────────────────────────── */
+/* ── 토큰 ─────────────────────────────────────────────────
+   라이트 전용. 다크 모드를 두지 않는 이유:
+   커뮤니티 스크린샷·OG 이미지와 실제 화면의 톤을 하나로 통제하기 위함.
+   ------------------------------------------------------- */
 :root {
-  --bg:        #ffffff;
-  --bg-sunk:   #f5f6f8;
-  --surface:   #ffffff;
-  --border:    #e4e6ea;
-  --text:      #16181c;
-  --text-dim:  #5b6470;
-  --text-mute: #8b95a1;
-  --accent:    #e8467c;
-  --accent-bg: #fdeef3;
+  /* 배경 — 순백 대신 아주 옅은 웜 핑크를 깔아 전체 톤을 부드럽게 */
+  --bg:         #fffafc;
+  --bg-sunk:    #fdf2f6;
+  --surface:    #ffffff;
+  --border:     #f2dfe7;
+  --border-mid: #e8cbd8;
 
-  /* 혼잡도 3-state / 재고 3-state 공용 */
-  --ok:        #1a9e5f;
-  --warn:      #d98214;
-  --bad:       #d64545;
+  --text:       #241a1f;
+  --text-dim:   #574149;   /* 본문 보조. 배경 대비 8.2:1 */
+  --text-mute:  #7a6670;   /* 최소 대비 자리. 4.9:1 — 이보다 밝게 두지 않는다 */
 
-  --radius:    12px;
+  /* accent — 사랑스러운 핑크. 배지·활성 칩·강조 텍스트에 쓴다 */
+  --accent:      #ff4d8d;
+  --accent-deep: #e93379;   /* hover / 대비가 더 필요한 자리 */
+  --accent-soft: #ffe4ee;   /* 배경 칠 */
+  --accent-ink:  #b41f5c;   /* soft 배경 위 텍스트. 4.5:1 확보 */
+
+  /* 상태 3-state.
+     품절에 빨강을 쓰지 않는다 — accent 핑크와 인접해 배지가 안 읽힌다.
+     원안 F2의 "품절 항목은 취소선" 규칙을 그대로 살려 회색+취소선으로 처리. */
+  --ok:        #16a34a;   /* 재고 있음 */
+  --ok-soft:   #e7f6ed;
+  --warn:      #d97706;   /* 수량 제한 */
+  --warn-soft: #fdf1e0;
+  --gone:      #9aa2ab;   /* 품절 — 취소선과 함께 */
+  --gone-soft: #f1f3f5;
+
+  /* 혼잡도. 1시간+ 의 빨강은 지도 핀에만 쓰고 카드 배지에는 쓰지 않는다 */
+  --wait-none: #16a34a;
+  --wait-10:   #84b830;
+  --wait-30:   #d97706;
+  --wait-60:   #dc2626;
+
+  --gutter:    16px;   /* 좌우 시작선. 헤더·칩·섹션·카드가 전부 이 값을 쓴다 */
+  --radius:    14px;
+  --radius-sm: 10px;
   --tap:       44px;   /* 최소 터치 타깃 */
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg:        #101215;
-    --bg-sunk:   #16191d;
-    --surface:   #1a1e23;
-    --border:    #2a2f36;
-    --text:      #eef1f4;
-    --text-dim:  #a7b0bb;
-    --text-mute: #6f7986;
-    --accent:    #ff6f9c;
-    --accent-bg: #35202a;
-
-    --ok:        #3fc47f;
-    --warn:      #e0a04a;
-    --bad:       #f0706f;
-  }
+  --shadow-card: 0 1px 2px rgba(42, 29, 35, 0.04), 0 1px 8px rgba(255, 77, 141, 0.05);
 }
 
 /* ── 리셋 ─────────────────────────────────────────────── */
@@ -48,8 +55,8 @@ body {
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
                "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: 17px;
+  line-height: 1.55;
   word-break: keep-all;      /* 한국어 줄바꿈 */
   overflow-wrap: anywhere;
   -webkit-font-smoothing: antialiased;
@@ -65,74 +72,283 @@ a { color: inherit; }
   flex-direction: column;
   max-width: 640px;          /* 모바일 우선. 데스크톱은 중앙 정렬 */
   margin-inline: auto;
+  background: var(--bg);
+  /* 하단 탭 높이 + 홈 인디케이터만큼 본문을 띄운다 */
+  padding-bottom: calc(58px + env(safe-area-inset-bottom));
 }
 
 .header {
-  padding: 14px 16px 10px;
-  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
-  background: var(--bg);
   z-index: 10;
+  padding: 12px var(--gutter) 10px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.header__row { display: flex; align-items: center; gap: 8px; }
+.header__text { min-width: 0; }
+.header__title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--accent-ink);
+}
+.header__sub { font-size: 14px; color: var(--text-dim); margin-top: 2px; }
+.header__search {
+  margin-left: auto;
+  flex: 0 0 auto;
+  min-height: var(--tap);
+  padding: 0 16px;
+  border: 1px solid var(--border-mid);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-dim);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-.header__title { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
-.header__sub   { font-size: 13px; color: var(--text-mute); margin-top: 2px; }
-
-.main { flex: 1; padding: 16px; }
+.main { flex: 1; padding: 12px 0 24px; }
 
 .placeholder {
-  color: var(--text-mute);
-  font-size: 14px;
+  color: var(--text-dim);
+  font-size: 16px;
   text-align: center;
-  padding: 48px 0;
+  line-height: 1.7;
+  padding: 56px 24px;
 }
 
 .footer {
   padding: 16px;
-  padding-bottom: max(16px, env(safe-area-inset-bottom));
   border-top: 1px solid var(--border);
   color: var(--text-mute);
-  font-size: 12px;
+  font-size: 13px;
   text-align: center;
 }
 
-/* ── 2단계 검증용 임시 스타일 (3단계에서 교체) ──────────── */
-.debug {
-  font-size: 12px;
-  color: var(--text-mute);
-  background: var(--bg-sunk);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 10px;
-  margin-bottom: 12px;
-}
+/* ── 필터 칩 ──────────────────────────────────────────── */
+.filterbar { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
 
-.chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.chips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 2px var(--gutter);
+  scrollbar-width: none;
+}
+.chips::-webkit-scrollbar { display: none; }
 
 .chip {
-  min-height: 34px;
-  padding: 0 12px;
-  border: 1px solid var(--border);
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding: 0 16px;
+  border: 1px solid var(--border-mid);
   border-radius: 999px;
   background: var(--surface);
   color: var(--text-dim);
-  font-size: 13px;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
 }
 .chip--on {
-  background: var(--accent-bg);
+  background: var(--accent-soft);
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+
+/* ── 섹션 ─────────────────────────────────────────────── */
+.section { margin-top: 22px; }
+
+.section__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 var(--gutter) 8px;
+}
+.section__headtext { min-width: 0; }
+.section__title { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+.section__note { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+
+.section__actions { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+.section__link {
+  border: 0;
+  background: none;
+  color: var(--accent-ink);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 8px 4px;
+  white-space: nowrap;
+}
+
+/* 가로 스크롤 레일.
+   scroll-snap을 쓰지 않는다 — 아이템이 컨테이너를 넘칠 때만 스냅이 걸려
+   개수(3개 vs 4개 이상)에 따라 첫 카드의 좌측 정렬이 달라진다. */
+.rail {
+  display: flex;
+  align-items: stretch;   /* 카드 높이를 가장 큰 것에 맞춰 통일한다 */
+  gap: 10px;
+  overflow-x: auto;
+  padding: 2px var(--gutter) 4px;
+  scrollbar-width: none;
+}
+.rail::-webkit-scrollbar { display: none; }
+
+.rail__more {
+  flex: 0 0 auto;
+  width: 84px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 1px dashed var(--border-mid);
+  border-radius: var(--radius);
+  background: var(--bg-sunk);
+  color: var(--accent-ink);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.rail__more span { font-size: 11px; font-weight: 500; color: var(--text-mute); }
+
+/* ── 카드 ─────────────────────────────────────────────────
+   카드끼리 줄이 맞도록 내부 행 높이를 고정한다.
+   레일 안에서는 flex stretch로 높이가 같아지고, 내부 행이 고정이라
+   대상명·장소·시간이 카드마다 같은 y좌표에 온다.
+   ------------------------------------------------------- */
+.card {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  padding: 0;
+  overflow: hidden;
+  transition: border-color 0.12s, transform 0.08s;
+}
+.card:active { transform: scale(0.985); }
+
+.card--tile { flex: 0 0 auto; width: 236px; }
+.card--row  { width: 100%; flex-direction: row; }
+
+.rows { display: flex; flex-direction: column; gap: 10px; padding: 0 var(--gutter); }
+
+/* 안내 이미지를 쓰지 않으므로 대상명 기반 색 블록이 썸네일 자리를 채운다 */
+.card__visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  flex: 0 0 auto;
+}
+.card--tile .card__visual { height: 140px; width: 100%; }
+.card--row  .card__visual { width: 96px; align-self: stretch; font-size: 18px; }
+
+/* 사진이 들어오면 색 블록 자리를 그대로 채운다. 비율이 제각각이라 cover로 자른다 */
+.card__visual--photo { padding: 0; background: var(--bg-sunk); }
+.card__visual--photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 11px 12px 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.card__head { display: flex; align-items: center; gap: 6px; }
+
+.badge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  letter-spacing: -0.01em;
+}
+.badge--birthday_cafe { background: var(--accent-soft); color: var(--accent-ink); }
+.badge--popup         { background: #e7eaff;            color: #3f45ad; }
+
+.period {
+  margin-left: auto;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.period--urgent { color: var(--accent-deep); font-weight: 800; }
+
+/* 대상명은 두 줄 자리를 항상 차지한다 — 한 줄짜리와 두 줄짜리가 섞여도 아래 행이 안 밀린다 */
+.card__subject {
+  font-size: 17.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card--tile .card__subject { min-height: calc(17.5px * 1.3 * 2); }
+
+.card__place {
+  font-size: 14.5px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card__district {
+  display: inline-block;
+  margin-right: 5px;
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: var(--bg-sunk);
+  color: var(--text-dim);
+  font-size: 13px;
   font-weight: 600;
 }
 
+.card__meta {
+  font-size: 13.5px;
+  color: var(--text-mute);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 굿즈 배지는 늘 바닥에 붙는다. 없어도 자리를 비워 카드 높이를 맞춘다 */
+.card__foot { margin-top: auto; padding-top: 6px; min-height: 24px; }
+.card__goods {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
 .search {
-  width: 100%;
+  display: block;
+  width: calc(100% - var(--gutter) * 2);
+  margin: 4px var(--gutter) 10px;
   min-height: var(--tap);
-  margin: 6px 0 12px;
-  padding: 0 12px;
-  border: 1px solid var(--border);
+  padding: 0 14px;
+  border: 1px solid var(--border-mid);
   border-radius: var(--radius);
   background: var(--surface);
   color: var(--text);
@@ -140,25 +356,117 @@ a { color: inherit; }
 }
 .search::placeholder { color: var(--text-mute); }
 
-.count { font-size: 13px; color: var(--text-mute); margin-bottom: 8px; }
+.count { padding: 0 var(--gutter) 8px; font-size: 14px; color: var(--text-dim); font-weight: 600; }
 
-.rawlist { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+/* ── 하단 탭 ──────────────────────────────────────────── */
+.bottomnav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 20;
+}
+.bottomnav__item {
+  flex: 1;
+  min-height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 0;
+  background: none;
+  color: var(--text-dim);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.bottomnav__item--on { color: var(--accent-deep); font-weight: 700; }
+.bottomnav__icon { font-size: 17px; line-height: 1; }
 
-.rawitem {
-  border: 1px solid var(--border);
+.footer__notice {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-mute);
+}
+
+
+/* ── 데스크톱 ─────────────────────────────────────────────
+   앱은 모바일 폭(640px)을 유지한다. 대신 그 바깥을 다른 색으로 깔고
+   경계선·그림자를 줘서, 넓은 화면에서 "가운데 띄워둔 앱"으로 읽히게 한다.
+   ------------------------------------------------------- */
+@media (min-width: 700px) {
+  /* 바깥 배경색을 바꾸지 않고 그림자만으로 앱 영역을 띄운다.
+     같은 색 위에 얹힌 그림자라 경계가 은은하게 잡힌다 */
+  .app { box-shadow: 0 0 0 1px rgba(120, 60, 85, 0.05), 0 6px 32px rgba(120, 60, 85, 0.13); }
+  .bottomnav { box-shadow: 0 0 0 1px rgba(120, 60, 85, 0.05), 0 -2px 20px rgba(120, 60, 85, 0.09); }
+
+  /* 넓은 화면에서는 좌우 여백을 조금 키운다 */
+  :root { --gutter: 20px; }
+}
+
+/* ── 검색 레이어 ──────────────────────────────────────────
+   탭을 갈아치우지 않고 위에 덮는다. 닫으면 홈이 보던 그대로 남는다.
+   ------------------------------------------------------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  max-width: 640px;
+  margin-inline: auto;
+  background: var(--bg);
+}
+
+.overlay__bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px var(--gutter);
+  padding-top: max(10px, env(safe-area-inset-top));
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.overlay__input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--tap);
+  padding: 0 14px;
+  border: 1px solid var(--border-mid);
   border-radius: var(--radius);
   background: var(--surface);
-  padding: 12px;
+  color: var(--text);
+  font-size: 16px;   /* 16px 미만이면 iOS Safari가 포커스 시 화면을 확대한다 */
 }
-.rawitem__top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.rawitem__sub { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+.overlay__input::placeholder { color: var(--text-mute); }
 
-.tag {
-  font-size: 11px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: var(--bg-sunk);
-  color: var(--text-dim);
-  border: 1px solid var(--border);
+.overlay__close {
+  flex: 0 0 auto;
+  min-height: var(--tap);
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  color: var(--accent-ink);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
 }
-.tag--period { margin-left: auto; }
+
+.overlay__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0 24px;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 700px) {
+  .overlay { box-shadow: 0 0 0 1px rgba(120, 60, 85, 0.05), 0 6px 32px rgba(120, 60, 85, 0.13); }
+}

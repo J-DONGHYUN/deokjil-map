@@ -9,16 +9,19 @@ export type DateKey = string
 
 export type DateFilter = 'today' | 'weekend' | 'all'
 export type DistrictFilter = District | 'all'
+export type KindFilter = EventKind | 'all'
 
 export interface FilterState {
   district: DistrictFilter
   date: DateFilter
+  kind: KindFilter
   query: string
 }
 
 export const DEFAULT_FILTER: FilterState = {
   district: 'all',
   date: 'today',
+  kind: 'all',
   query: '',
 }
 
@@ -92,17 +95,30 @@ export function daysLeft(ev: EventItem, today: DateKey = todayKey()): number {
   return diffDays(today, ev.ends_on)
 }
 
-/** 카드에 붙는 기간 배지 문구 */
+/**
+ * 카드 기간 배지. D-데이 표기를 쓴다.
+ * "3일 뒤 시작"보다 "시작 D-3"이 짧고, 팬덤 쪽에서 이미 통용되는 표기다.
+ * 항상 '다음에 닥칠 마감'을 가리킨다 — 시작 전이면 시작까지, 진행 중이면 종료까지.
+ */
 export function periodLabel(ev: EventItem, today: DateKey = todayKey()): string {
   if (ev.ends_on < today) return '종료'
 
   if (ev.starts_on > today) {
-    const until = diffDays(today, ev.starts_on)
-    return until === 1 ? '내일 시작' : `${until}일 뒤 시작`
+    return `시작 D-${diffDays(today, ev.starts_on)}`
   }
 
   const left = daysLeft(ev, today)
-  return left === 0 ? '오늘 종료' : `${left}일 남음`
+  return left === 0 ? '오늘 마감' : `마감 D-${left}`
+}
+
+/** 지역별로 묶는다. 홈이 "어디서 오늘 뭐 하냐"에 답하려면 축이 지역이어야 한다 */
+export function groupByDistrict(
+  events: EventItem[],
+): { district: District; events: EventItem[] }[] {
+  const order = Object.keys(DISTRICT_LABELS) as District[]
+  return order
+    .map((district) => ({ district, events: events.filter((e) => e.place.district === district) }))
+    .filter((g) => g.events.length > 0)
 }
 
 /** 대상·장소명 부분 일치. 아티스트 목록은 검색·필터용으로만 존재한다 */
@@ -150,6 +166,7 @@ export function filterEvents(
   const matched = events.filter(
     (ev) =>
       (filter.district === 'all' || ev.place.district === filter.district) &&
+      (filter.kind === 'all' || ev.kind === filter.kind) &&
       matchesDate(ev, filter.date, today) &&
       matchesQuery(ev, filter.query),
   )
@@ -161,4 +178,25 @@ export function availableDistricts(events: EventItem[]): District[] {
   const order = Object.keys(DISTRICT_LABELS) as District[]
   const present = new Set(events.map((e) => e.place.district))
   return order.filter((d) => present.has(d))
+}
+
+/**
+ * 홈 섹션용. 날짜·검색을 뺀 지역·유형만 적용한 뒤,
+ * 종료된 이벤트를 제외하고 정렬한다.
+ * 홈에서는 날짜 축을 칩이 아니라 섹션이 담당하므로 여기서 날짜를 걸지 않는다.
+ */
+export function baseForSections(
+  events: EventItem[],
+  filter: Pick<FilterState, 'district' | 'kind'>,
+  today: DateKey = todayKey(),
+): EventItem[] {
+  return sortEvents(
+    events.filter(
+      (ev) =>
+        (filter.district === 'all' || ev.place.district === filter.district) &&
+        (filter.kind === 'all' || ev.kind === filter.kind) &&
+        ev.ends_on >= today,
+    ),
+    today,
+  )
 }

@@ -19,7 +19,8 @@
     "conditions": "음료 1잔 주문",
     "source_url": "https://example.com/sample/evt_0001",
     "trust": "parsed",
-    "goods": []
+    "goods": [],
+    "image_url": "https://picsum.photos/seed/hongdae1/480/320"
   },
   {
     "id": "evt_0002",
@@ -152,13 +153,44 @@
     "source_url": "https://example.com/sample/evt_0007",
     "trust": "official",
     "goods": [
-      { "id": "gd_0701", "name": "아크릴 스탠드", "is_random": false, "sort_order": 1 },
-      { "id": "gd_0702", "name": "랜덤 포토카드", "is_random": true, "sort_order": 2 },
-      { "id": "gd_0703", "name": "응원봉 키링", "is_random": false, "sort_order": 3 },
-      { "id": "gd_0704", "name": "포토카드 바인더", "is_random": false, "sort_order": 4 },
-      { "id": "gd_0705", "name": "랜덤 뱃지", "is_random": true, "sort_order": 5 },
-      { "id": "gd_0706", "name": "티셔츠 (M/L)", "is_random": false, "sort_order": 6 }
-    ]
+      {
+        "id": "gd_0701",
+        "name": "아크릴 스탠드",
+        "is_random": false,
+        "sort_order": 1
+      },
+      {
+        "id": "gd_0702",
+        "name": "랜덤 포토카드",
+        "is_random": true,
+        "sort_order": 2
+      },
+      {
+        "id": "gd_0703",
+        "name": "응원봉 키링",
+        "is_random": false,
+        "sort_order": 3
+      },
+      {
+        "id": "gd_0704",
+        "name": "포토카드 바인더",
+        "is_random": false,
+        "sort_order": 4
+      },
+      {
+        "id": "gd_0705",
+        "name": "랜덤 뱃지",
+        "is_random": true,
+        "sort_order": 5
+      },
+      {
+        "id": "gd_0706",
+        "name": "티셔츠 (M/L)",
+        "is_random": false,
+        "sort_order": 6
+      }
+    ],
+    "image_url": "https://picsum.photos/seed/popup-nova/480/320"
   },
   {
     "id": "evt_0008",
@@ -181,11 +213,152 @@
     "source_url": "https://example.com/sample/evt_0008",
     "trust": "official",
     "goods": [
-      { "id": "gd_0801", "name": "미니 포토북", "is_random": false, "sort_order": 1 },
-      { "id": "gd_0802", "name": "랜덤 트레이딩 카드", "is_random": true, "sort_order": 2 },
-      { "id": "gd_0803", "name": "머그컵", "is_random": false, "sort_order": 3 },
-      { "id": "gd_0804", "name": "에코백", "is_random": false, "sort_order": 4 },
-      { "id": "gd_0805", "name": "랜덤 아크릴 참", "is_random": true, "sort_order": 5 }
-    ]
+      {
+        "id": "gd_0801",
+        "name": "미니 포토북",
+        "is_random": false,
+        "sort_order": 1
+      },
+      {
+        "id": "gd_0802",
+        "name": "랜덤 트레이딩 카드",
+        "is_random": true,
+        "sort_order": 2
+      },
+      {
+        "id": "gd_0803",
+        "name": "머그컵",
+        "is_random": false,
+        "sort_order": 3
+      },
+      {
+        "id": "gd_0804",
+        "name": "에코백",
+        "is_random": false,
+        "sort_order": 4
+      },
+      {
+        "id": "gd_0805",
+        "name": "랜덤 아크릴 참",
+        "is_random": true,
+        "sort_order": 5
+      }
+    ],
+    "image_url": "https://picsum.photos/seed/popup-lumen/480/320"
+  },
+  {
+    "id": "evt_0009",
+    "place": {
+      "name": "합정 로스터리 하루",
+      "address": "서울 마포구 양화로6길 17",
+      "lat": 37.5487,
+      "lng": 126.9156,
+      "district": "hapjeong",
+      "kind": "cafe"
+    },
+    "subject": "샘플아이돌 서윤",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-08-25",
+    "ends_on": "2026-08-28",
+    "open_hours": "12:00~20:00",
+    "perks": "선착 60명 아크릴 배지",
+    "conditions": "음료 1잔 주문",
+    "source_url": "https://example.com/sample/evt_0009",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "evt_0010",
+    "place": {
+      "name": "카페 온도 합정점",
+      "address": "서울 마포구 독막로 15",
+      "lat": 37.5501,
+      "lng": 126.9128,
+      "district": "hapjeong",
+      "kind": "cafe"
+    },
+    "subject": "샘플아이돌 태오",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-08-27",
+    "ends_on": "2026-08-31",
+    "open_hours": "11:30~21:00",
+    "perks": "선착 150명 포토카드 + 컵홀더",
+    "conditions": "음료 1잔 주문",
+    "source_url": "https://example.com/sample/evt_0010",
+    "trust": "parsed",
+    "goods": [],
+    "image_url": "https://picsum.photos/seed/hapjeong-taeo/480/320"
+  },
+  {
+    "id": "evt_0011",
+    "place": {
+      "name": "그린도어 커피",
+      "address": "서울 마포구 월드컵로1길 22",
+      "lat": 37.5513,
+      "lng": 126.9109,
+      "district": "hapjeong",
+      "kind": "cafe"
+    },
+    "subject": "샘플캐릭터 코코",
+    "subject_type": "character",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-08-26",
+    "ends_on": "2026-08-30",
+    "open_hours": "13:00~19:00",
+    "perks": "메뉴 주문 시 랜덤 스티커",
+    "conditions": "음료 1잔 주문",
+    "source_url": "https://example.com/sample/evt_0011",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "evt_0012",
+    "place": {
+      "name": "합정 언더그라운드",
+      "address": "서울 마포구 잔다리로 42",
+      "lat": 37.5476,
+      "lng": 126.9174,
+      "district": "hapjeong",
+      "kind": "popup_venue"
+    },
+    "subject": "샘플그룹 AURA",
+    "subject_type": "idol",
+    "kind": "popup",
+    "starts_on": "2026-08-27",
+    "ends_on": "2026-09-02",
+    "open_hours": "11:00~20:00 (입장 마감 19:30)",
+    "perks": "3만원 이상 구매 시 포토카드",
+    "conditions": "현장 대기 등록 후 입장",
+    "source_url": "https://example.com/sample/evt_0012",
+    "trust": "official",
+    "goods": [
+      {
+        "id": "gd_1201",
+        "name": "아크릴 키링",
+        "is_random": false,
+        "sort_order": 1
+      },
+      {
+        "id": "gd_1202",
+        "name": "랜덤 포토카드",
+        "is_random": true,
+        "sort_order": 2
+      },
+      {
+        "id": "gd_1203",
+        "name": "스티커 팩",
+        "is_random": false,
+        "sort_order": 3
+      },
+      {
+        "id": "gd_1204",
+        "name": "미니 포스터",
+        "is_random": false,
+        "sort_order": 4
+      }
+    ],
+    "image_url": "https://picsum.photos/seed/popup-aura/480/320"
   }
 ]
