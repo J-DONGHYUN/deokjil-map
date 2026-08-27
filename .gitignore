@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+.env.local
+*.local
+
+# 수집 원본 (개인정보·저작물 원문이 섞일 수 있음 — 가공 결과만 커밋)
+data/raw/
+
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
