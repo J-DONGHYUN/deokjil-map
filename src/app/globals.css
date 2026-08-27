@@ -96,3 +96,69 @@ a { color: inherit; }
   font-size: 12px;
   text-align: center;
 }
+
+/* ── 2단계 검증용 임시 스타일 (3단계에서 교체) ──────────── */
+.debug {
+  font-size: 12px;
+  color: var(--text-mute);
+  background: var(--bg-sunk);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+}
+
+.chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+
+.chip {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-dim);
+  font-size: 13px;
+  cursor: pointer;
+}
+.chip--on {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.search {
+  width: 100%;
+  min-height: var(--tap);
+  margin: 6px 0 12px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 16px;   /* 16px 미만이면 iOS Safari가 포커스 시 화면을 확대한다 */
+}
+.search::placeholder { color: var(--text-mute); }
+
+.count { font-size: 13px; color: var(--text-mute); margin-bottom: 8px; }
+
+.rawlist { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+
+.rawitem {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 12px;
+}
+.rawitem__top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.rawitem__sub { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+
+.tag {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--bg-sunk);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+}
+.tag--period { margin-left: auto; }

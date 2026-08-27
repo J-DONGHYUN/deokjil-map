@@ -1,0 +1,191 @@
+[
+  {
+    "id": "evt_0001",
+    "place": {
+      "name": "카페 루미에르",
+      "address": "서울 마포구 와우산로 21길 12",
+      "lat": 37.5551,
+      "lng": 126.9242,
+      "district": "hongdae",
+      "kind": "cafe"
+    },
+    "subject": "샘플아이돌 하린",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-08-27",
+    "ends_on": "2026-08-29",
+    "open_hours": "12:00~20:00",
+    "perks": "선착 100명 컵홀더 + 포토카드",
+    "conditions": "음료 1잔 주문",
+    "source_url": "https://example.com/sample/evt_0001",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "evt_0002",
+    "place": {
+      "name": "블루문 커피",
+      "address": "서울 마포구 홍익로 5길 30",
+      "lat": 37.5568,
+      "lng": 126.9219,
+      "district": "hongdae",
+      "kind": "cafe"
+    },
+    "subject": "샘플아이돌 시온",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-08-29",
+    "ends_on": "2026-08-30",
+    "open_hours": "11:00~21:00",
+    "perks": "선착 50명 아크릴 키링",
+    "conditions": "음료 1잔 주문",
+    "source_url": "https://example.com/sample/evt_0002",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "evt_0003",
+    "place": {
+      "name": "스튜디오 그레이",
+      "address": "서울 마포구 어울마당로 62",
+      "lat": 37.5539,
+      "lng": 126.9265,
+      "district": "hongdae",
+      "kind": "cafe"
+    },
+    "subject": "샘플버추얼 노아",
+    "subject_type": "virtual",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-09-05",
+    "ends_on": "2026-09-07",
+    "open_hours": "13:00~20:00",
+    "perks": "랜덤 포토카드 1종",
+    "conditions": "음료 1잔 주문",
+    "source_url": "https://example.com/sample/evt_0003",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "evt_0004",
+    "place": {
+      "name": "합정 브루잉랩",
+      "address": "서울 마포구 양화로 12길 8",
+      "lat": 37.5492,
+      "lng": 126.9143,
+      "district": "hapjeong",
+      "kind": "cafe"
+    },
+    "subject": "샘플아이돌 라온",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-08-26",
+    "ends_on": "2026-08-27",
+    "open_hours": "12:00~19:00",
+    "perks": "선착 80명 엽서 세트",
+    "conditions": "음료 1잔 주문",
+    "source_url": "https://example.com/sample/evt_0004",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "evt_0005",
+    "place": {
+      "name": "카페 마르셀",
+      "address": "서울 마포구 독막로 7길 41",
+      "lat": 37.5478,
+      "lng": 126.9121,
+      "district": "hapjeong",
+      "kind": "cafe"
+    },
+    "subject": "샘플캐릭터 미르",
+    "subject_type": "character",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-08-30",
+    "ends_on": "2026-09-03",
+    "open_hours": "12:00~20:00",
+    "perks": "메뉴 주문 시 스티커 증정",
+    "conditions": "음료 1잔 주문",
+    "source_url": "https://example.com/sample/evt_0005",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "evt_0006",
+    "place": {
+      "name": "성수 아뜰리에",
+      "address": "서울 성동구 연무장길 33",
+      "lat": 37.5447,
+      "lng": 127.0562,
+      "district": "seongsu",
+      "kind": "cafe"
+    },
+    "subject": "샘플아이돌 유진",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-09-01",
+    "ends_on": "2026-09-04",
+    "open_hours": "11:00~20:00",
+    "perks": "선착 120명 홀로그램 포카",
+    "conditions": "음료 1잔 주문",
+    "source_url": "https://example.com/sample/evt_0006",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "evt_0007",
+    "place": {
+      "name": "성수 팝업스페이스 B동",
+      "address": "서울 성동구 성수이로 66",
+      "lat": 37.5432,
+      "lng": 127.0553,
+      "district": "seongsu",
+      "kind": "popup_venue"
+    },
+    "subject": "샘플그룹 NOVA",
+    "subject_type": "idol",
+    "kind": "popup",
+    "starts_on": "2026-08-27",
+    "ends_on": "2026-09-06",
+    "open_hours": "11:00~20:00 (입장 마감 19:30)",
+    "perks": "5만원 이상 구매 시 포스터 증정",
+    "conditions": "현장 대기 등록 후 입장",
+    "source_url": "https://example.com/sample/evt_0007",
+    "trust": "official",
+    "goods": [
+      { "id": "gd_0701", "name": "아크릴 스탠드", "is_random": false, "sort_order": 1 },
+      { "id": "gd_0702", "name": "랜덤 포토카드", "is_random": true, "sort_order": 2 },
+      { "id": "gd_0703", "name": "응원봉 키링", "is_random": false, "sort_order": 3 },
+      { "id": "gd_0704", "name": "포토카드 바인더", "is_random": false, "sort_order": 4 },
+      { "id": "gd_0705", "name": "랜덤 뱃지", "is_random": true, "sort_order": 5 },
+      { "id": "gd_0706", "name": "티셔츠 (M/L)", "is_random": false, "sort_order": 6 }
+    ]
+  },
+  {
+    "id": "evt_0008",
+    "place": {
+      "name": "강남 팝업라운지 3F",
+      "address": "서울 강남구 강남대로 428",
+      "lat": 37.4982,
+      "lng": 127.0281,
+      "district": "gangnam",
+      "kind": "popup_venue"
+    },
+    "subject": "샘플그룹 LUMEN",
+    "subject_type": "idol",
+    "kind": "popup",
+    "starts_on": "2026-08-29",
+    "ends_on": "2026-09-13",
+    "open_hours": "10:30~20:00",
+    "perks": "선착 200명 종이백 증정",
+    "conditions": "사전 예약 우선 입장",
+    "source_url": "https://example.com/sample/evt_0008",
+    "trust": "official",
+    "goods": [
+      { "id": "gd_0801", "name": "미니 포토북", "is_random": false, "sort_order": 1 },
+      { "id": "gd_0802", "name": "랜덤 트레이딩 카드", "is_random": true, "sort_order": 2 },
+      { "id": "gd_0803", "name": "머그컵", "is_random": false, "sort_order": 3 },
+      { "id": "gd_0804", "name": "에코백", "is_random": false, "sort_order": 4 },
+      { "id": "gd_0805", "name": "랜덤 아크릴 참", "is_random": true, "sort_order": 5 }
+    ]
+  }
+]
