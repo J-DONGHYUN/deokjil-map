@@ -8,13 +8,19 @@
  *
  * 기본은 K-pop 관련만 남긴다. --all 을 주면 카테고리 필터를 끄고 전부 내보낸다.
  */
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
 
 const args = process.argv.slice(2)
 const OUT = args.includes('--out') ? args[args.indexOf('--out') + 1] : 'src/data/events.json'
 const KEEP_ALL = args.includes('--all')
-const IN = 'data/raw/crawl/popga.json'
+const IN_POPGA = 'data/raw/crawl/popga.json'
+const IN_OFFMATE = 'data/raw/crawl/offmate.json'
+
+function readRecords(path) {
+  if (!existsSync(path)) return []
+  return JSON.parse(readFileSync(path, 'utf8')).records ?? []
+}
 
 /** 서울만 다룬다 (poc-plan 4.2) */
 const SEOUL_PREFIX = '서울'
@@ -180,10 +186,63 @@ function toEvent(rec, artist) {
   }
 }
 
-const raw = JSON.parse(readFileSync(IN, 'utf8'))
+/**
+ * 오프메이트 레코드 → 이벤트.
+ *
+ * 아티스트가 구조화돼 있어 K-pop 화이트리스트가 필요 없고,
+ * 좌표도 들어 있어 지오코딩이 필요 없다.
+ */
+function offmateToEvent(rec) {
+  const address = rec.address ?? ''
+  const hours =
+    rec.startAt && rec.endAt ? `${rec.startAt} ~ ${rec.endAt}` : null
+
+  // 주최자 계정이 원문이다. 없으면 오프메이트 상세로 떨어진다
+  const host =
+    rec.snsType === 'twitter' && rec.twitterId
+      ? `https://x.com/${rec.twitterId.replace(/^@/, '')}`
+      : rec.instagramId
+        ? `https://www.instagram.com/${rec.instagramId.replace(/^@/, '')}`
+        : null
+
+  const perkCount =
+    rec.specialGoods.length + rec.firstComeGoods.length + rec.optionalSpecialGoods.length
+
+  return {
+    id: `om_${rec.id}`,
+    place: {
+      // 생카는 카페가 장소다. 생카 이름(rec.name)은 이벤트명이지 장소명이 아니다
+      name: rec.cafeName || address || rec.name || '장소 미정',
+      address,
+      lat: rec.latitude,
+      lng: rec.longitude,
+      district: districtOf(address),
+      kind: 'cafe',
+    },
+    // 멤버명이 대상이다. 그룹명은 검색·필터에서 쓰이도록 제목에 남긴다
+    subject: rec.memberName ?? rec.groupName ?? rec.name ?? '',
+    title: [rec.groupName, rec.memberName, rec.name].filter(Boolean).join(' · '),
+    subject_type: 'idol',
+    kind: 'birthday_cafe',
+    starts_on: rec.startDate,
+    ends_on: rec.endDate,
+    ...(hours ? { open_hours: hours } : {}),
+    // 특전 이름 매핑은 아직 없다. 개수만으로도 "특전 N종"이 표시된다
+    ...(perkCount ? { perks: `특전 ${perkCount}종` } : {}),
+    source_url: host ?? rec.source_url,
+    ...(host ? { listing_url: rec.source_url } : {}),
+    ...(rec.images?.[0] ? { image_url: rec.images[0] } : {}),
+    trust: rec.isHostVerified ? 'partner' : 'parsed',
+    goods: [],
+  }
+}
+
 const today = new Date().toISOString().slice(0, 10)
 
-const rows = raw.records
+const popgaRecords = readRecords(IN_POPGA)
+const offmateRecords = readRecords(IN_OFFMATE)
+
+const rows = popgaRecords
   .filter((r) => (r.roadAddress || r.address || '').startsWith(SEOUL_PREFIX))
   .filter((r) => typeof r.latitude === 'number' && typeof r.longitude === 'number')
   .filter((r) => r.closeDate >= today) // 끝난 것은 목록에서 뺀다 (poc-plan 4.3)
@@ -192,7 +251,14 @@ const rows = raw.records
   // 멤버 이름이 목록에 없어도 "○○ 생일카페"면 K-pop 행사로 본다
   .filter(({ artist, cafe }) => KEEP_ALL || artist || cafe)
 
-const events = rows.map(({ rec, artist }) => toEvent(rec, artist))
+// 오프메이트는 전국이라 서울만 남긴다. 좌표가 없으면 지도에 못 찍으니 제외한다
+const cafeEvents = offmateRecords
+  .filter((r) => (r.address ?? '').startsWith('서울'))
+  .filter((r) => typeof r.latitude === 'number' && typeof r.longitude === 'number')
+  .filter((r) => r.endDate >= today)
+  .map(offmateToEvent)
+
+const events = [...rows.map(({ rec, artist }) => toEvent(rec, artist)), ...cafeEvents]
 events.sort((a, b) => (a.starts_on < b.starts_on ? -1 : 1))
 
 mkdirSync(dirname(OUT), { recursive: true })
@@ -201,6 +267,10 @@ writeFileSync(OUT, JSON.stringify(events, null, 2) + '\n', 'utf8')
 const byDistrict = {}
 for (const e of events) byDistrict[e.place.district] = (byDistrict[e.place.district] ?? 0) + 1
 
-console.log(`원본 ${raw.records.length} → 서울·진행중${KEEP_ALL ? '' : '·K-pop'} ${events.length}건`)
+console.log(
+  `팝가 ${popgaRecords.length} + 오프메이트 ${offmateRecords.length} → ` +
+    `서울·진행중${KEEP_ALL ? '' : '·K-pop'} ${events.length}건 ` +
+    `(팝업 ${events.length - cafeEvents.length} · 생카 ${cafeEvents.length})`,
+)
 console.log('구역별:', byDistrict)
 console.log(`저장: ${OUT}`)

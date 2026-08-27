@@ -11,6 +11,7 @@ import {
   type DistrictFilter,
   type FilterState,
 } from '@/lib/filters'
+import { track, trackVisit } from '@/lib/analytics'
 import BottomNav, { type Tab } from '@/components/BottomNav'
 import HomeView from '@/components/HomeView'
 import ListView from '@/components/ListView'
@@ -39,21 +40,30 @@ export default function Page() {
     setToday(t)
     // 기본 날짜는 오늘이다. 오늘이 확정되는 시점이 마운트 이후라 여기서 채운다
     setFilter((f) => ({ ...f, date: t }))
+    // 방문·재방문 계상. 지표 0·5 의 원천이다
+    trackVisit(t)
   }, [])
 
   const districts = useMemo(() => availableDistricts(ALL_EVENTS), [])
 
   const setField = useCallback(
-    <K extends keyof FilterState>(key: K, value: FilterState[K]) =>
-      setFilter((f) => ({ ...f, [key]: value })),
+    <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
+      setFilter((f) => ({ ...f, [key]: value }))
+      track('filter_change', { field: String(key), value: String(value) })
+    },
     [],
   )
 
   const openDetail = useCallback((id: string) => {
     openedInside.current = true
     openDetailRoute(id)
-    // 계측은 5단계에서 track()으로 교체된다
-    console.info('[view_detail]', id)
+    const ev = ALL_EVENTS.find((e) => e.id === id)
+    track('view_detail', {
+      event_id: id,
+      kind: ev?.kind,
+      district: ev?.place.district,
+      subject: ev?.subject,
+    })
   }, [])
 
   const closeDetail = useCallback(() => {
@@ -82,8 +92,8 @@ export default function Page() {
       <header className="header">
         <div className="header__row">
           <div className="header__text">
-            <h1 className="header__title">오늘 뭐 열려?</h1>
-            <p className="header__sub">서울 생카 · 팝업 · 굿즈 현황</p>
+            <h1 className="header__title">모여라덕</h1>
+            <p className="header__sub">오늘 서울 어디서 뭐 하지?</p>
           </div>
           <button
             type="button"
@@ -146,7 +156,15 @@ export default function Page() {
           event={detailEvent}
           today={today}
           onClose={closeDetail}
-          onOpenSource={(ev) => console.info('[open_source]', ev.id)}
+          onOpenSource={(ev) =>
+            // 원문 클릭률은 신뢰도의 대리 지표다 (poc-plan 1번)
+            track('open_source', {
+              event_id: ev.id,
+              kind: ev.kind,
+              trust: ev.trust,
+              host: new URL(ev.source_url).hostname,
+            })
+          }
         />
       )}
 

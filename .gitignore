@@ -18,3 +18,11 @@ out/
 next-env.d.ts
 tsconfig.tsbuildinfo
 *.tsbuildinfo
+
+# 크롤러 점검용으로 루트에 떨어질 수 있는 임시 파일 (사이트맵·페이지 덤프)
+# 원본은 커밋하지 않는다 — data/raw/ 규칙과 같은 이유
+*.sitemap.xml
+sitemap*.xml
+om*.xml
+*_detail.html
+chunks.txt
