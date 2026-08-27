@@ -1,4 +1,4 @@
-export default function App() {
+export default function Home() {
   return (
     <div className="app">
       <header className="header">
@@ -10,9 +10,7 @@ export default function App() {
         <p className="placeholder">골격만 세운 상태. 다음 단계에서 조회 화면이 들어온다.</p>
       </main>
 
-      <footer className="footer">
-        주최자 공지 기반 · 방문 전 원문 확인 권장
-      </footer>
+      <footer className="footer">주최자 공지 기반 · 방문 전 원문 확인 권장</footer>
     </div>
   )
 }
