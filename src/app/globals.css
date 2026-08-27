@@ -470,3 +470,138 @@ a { color: inherit; }
 @media (min-width: 700px) {
   .overlay { box-shadow: 0 0 0 1px rgba(120, 60, 85, 0.05), 0 6px 32px rgba(120, 60, 85, 0.13); }
 }
+
+/* ── 상세 시트 ────────────────────────────────────────────
+   해시 라우팅(#/e/:id)과 짝을 이룬다. 뒤로가기로 닫히는 게 핵심이라
+   모바일에서 사이트를 벗어나지 않는다.
+   ------------------------------------------------------- */
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  max-width: 640px;
+  margin-inline: auto;
+  background: var(--bg);
+}
+
+.sheet__bar {
+  display: flex;
+  align-items: center;
+  padding: 6px var(--gutter);
+  padding-top: max(6px, env(safe-area-inset-top));
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.sheet__back {
+  min-height: var(--tap);
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  color: var(--accent-ink);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sheet__body {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: max(32px, env(safe-area-inset-bottom));
+  -webkit-overflow-scrolling: touch;
+}
+
+.sheet__visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.sheet__visual--photo { background: var(--bg-sunk); padding: 0; }
+.sheet__visual--photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.sheet__head { padding: 16px var(--gutter) 8px; }
+.sheet__badges { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.sheet__badges .period { margin-left: 0; }
+.sheet__title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+}
+.sheet__place { margin-top: 8px; font-size: 16px; color: var(--text); }
+.sheet__address { margin-top: 3px; font-size: 14px; color: var(--text-mute); }
+
+/* 정의 목록 — 라벨 폭을 고정해 값이 세로로 정렬되게 한다 */
+.dlist {
+  margin: 12px var(--gutter) 0;
+  border-top: 1px solid var(--border);
+}
+.drow {
+  display: flex;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+}
+.drow__label { flex: 0 0 76px; font-size: 14px; color: var(--text-mute); }
+.drow__value { flex: 1; font-size: 15px; color: var(--text); }
+
+.goods { margin: 22px var(--gutter) 0; }
+.goods__title { font-size: 17px; font-weight: 700; }
+.goods__note { margin-top: 3px; font-size: 13px; color: var(--text-mute); }
+.goods__list {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.goods__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 13px;
+  font-size: 15px;
+  background: var(--surface);
+}
+.goods__item + .goods__item { border-top: 1px solid var(--border); }
+.goods__random {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.sourcelink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 22px var(--gutter) 0;
+  min-height: 50px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.sheet__disclaimer {
+  margin: 12px var(--gutter) 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-mute);
+  text-align: center;
+}
+
+@media (min-width: 700px) {
+  .sheet { box-shadow: 0 0 0 1px rgba(120, 60, 85, 0.05), 0 6px 32px rgba(120, 60, 85, 0.13); }
+}

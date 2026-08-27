@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import rawEvents from '@/data/events.json'
 import type { EventItem } from '@/types'
 import {
@@ -14,6 +14,8 @@ import BottomNav, { type Tab } from '@/components/BottomNav'
 import HomeView from '@/components/HomeView'
 import ListView from '@/components/ListView'
 import SearchOverlay from '@/components/SearchOverlay'
+import EventDetail from '@/components/EventDetail'
+import { closeDetailRoute, openDetailRoute, useRoute } from '@/lib/route'
 
 const ALL_EVENTS = rawEvents as EventItem[]
 
@@ -25,6 +27,11 @@ export default function Page() {
   const [filter, setFilter] = useState<FilterState>(DEFAULT_FILTER)
   const [searchOpen, setSearchOpen] = useState(false)
 
+  const route = useRoute()
+  // 앱 안에서 연 상세인지, 공유 링크로 곧장 들어온 것인지 구분한다.
+  // 전자는 back으로 닫아 히스토리를 늘리지 않고, 후자는 되돌아갈 곳이 없어 해시만 지운다
+  const openedInside = useRef(false)
+
   useEffect(() => setToday(todayKey()), [])
 
   const districts = useMemo(() => availableDistricts(ALL_EVENTS), [])
@@ -35,10 +42,23 @@ export default function Page() {
     [],
   )
 
-  // 상세는 4단계(해시 라우팅)에서 붙는다. 지금은 계측 자리만 잡아둔다
   const openDetail = useCallback((id: string) => {
+    openedInside.current = true
+    openDetailRoute(id)
+    // 계측은 5단계에서 track()으로 교체된다
     console.info('[view_detail]', id)
   }, [])
+
+  const closeDetail = useCallback(() => {
+    const inside = openedInside.current
+    openedInside.current = false
+    closeDetailRoute(inside)
+  }, [])
+
+  const detailEvent = useMemo(
+    () => (route.name === 'detail' ? ALL_EVENTS.find((e) => e.id === route.id) ?? null : null),
+    [route],
+  )
 
   const goList = useCallback((district: DistrictFilter) => {
     setFilter((f) => ({ ...f, district }))
@@ -111,6 +131,15 @@ export default function Page() {
       </footer>
 
       <BottomNav active={tab} onChange={setTab} />
+
+      {detailEvent && today && (
+        <EventDetail
+          event={detailEvent}
+          today={today}
+          onClose={closeDetail}
+          onOpenSource={(ev) => console.info('[open_source]', ev.id)}
+        />
+      )}
 
       {searchOpen && today && (
         <SearchOverlay
