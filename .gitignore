@@ -4,8 +4,9 @@ dist/
 .env.local
 *.local
 
-# 수집 원본 (개인정보·저작물 원문이 섞일 수 있음 — 가공 결과만 커밋)
-data/raw/
+# 수집 원본 (저작물 원문 — 재게시하지 않는다. 가공 결과만 커밋)
+data/raw/*
+!data/raw/README.md
 
 .DS_Store
 Thumbs.db
