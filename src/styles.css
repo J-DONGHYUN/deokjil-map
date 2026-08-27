@@ -1,0 +1,98 @@
+/* ── 토큰 ─────────────────────────────────────────────── */
+:root {
+  --bg:        #ffffff;
+  --bg-sunk:   #f5f6f8;
+  --surface:   #ffffff;
+  --border:    #e4e6ea;
+  --text:      #16181c;
+  --text-dim:  #5b6470;
+  --text-mute: #8b95a1;
+  --accent:    #e8467c;
+  --accent-bg: #fdeef3;
+
+  /* 혼잡도 3-state / 재고 3-state 공용 */
+  --ok:        #1a9e5f;
+  --warn:      #d98214;
+  --bad:       #d64545;
+
+  --radius:    12px;
+  --tap:       44px;   /* 최소 터치 타깃 */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:        #101215;
+    --bg-sunk:   #16191d;
+    --surface:   #1a1e23;
+    --border:    #2a2f36;
+    --text:      #eef1f4;
+    --text-dim:  #a7b0bb;
+    --text-mute: #6f7986;
+    --accent:    #ff6f9c;
+    --accent-bg: #35202a;
+
+    --ok:        #3fc47f;
+    --warn:      #e0a04a;
+    --bad:       #f0706f;
+  }
+}
+
+/* ── 리셋 ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+               "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  word-break: keep-all;      /* 한국어 줄바꿈 */
+  overflow-wrap: anywhere;
+  -webkit-font-smoothing: antialiased;
+}
+
+button { font: inherit; color: inherit; }
+a { color: inherit; }
+
+/* ── 레이아웃 ─────────────────────────────────────────── */
+.app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  max-width: 640px;          /* 모바일 우선. 데스크톱은 중앙 정렬 */
+  margin-inline: auto;
+}
+
+.header {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
+}
+
+.header__title { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+.header__sub   { font-size: 13px; color: var(--text-mute); margin-top: 2px; }
+
+.main { flex: 1; padding: 16px; }
+
+.placeholder {
+  color: var(--text-mute);
+  font-size: 14px;
+  text-align: center;
+  padding: 48px 0;
+}
+
+.footer {
+  padding: 16px;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border);
+  color: var(--text-mute);
+  font-size: 12px;
+  text-align: center;
+}
