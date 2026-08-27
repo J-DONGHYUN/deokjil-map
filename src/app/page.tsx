@@ -4,8 +4,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import rawEvents from '@/data/events.json'
 import type { EventItem } from '@/types'
 import {
-  DEFAULT_FILTER,
+  defaultFilter,
   availableDistricts,
+  filterEvents,
   todayKey,
   type DistrictFilter,
   type FilterState,
@@ -13,6 +14,7 @@ import {
 import BottomNav, { type Tab } from '@/components/BottomNav'
 import HomeView from '@/components/HomeView'
 import ListView from '@/components/ListView'
+import MapView from '@/components/MapView'
 import SearchOverlay from '@/components/SearchOverlay'
 import EventDetail from '@/components/EventDetail'
 import { closeDetailRoute, openDetailRoute, useRoute } from '@/lib/route'
@@ -24,7 +26,7 @@ export default function Page() {
   // 서버 프리렌더 시점(빌드 시각)을 쓰면 배포 다음날부터 하이드레이션이 어긋난다.
   const [today, setToday] = useState<string | null>(null)
   const [tab, setTab] = useState<Tab>('home')
-  const [filter, setFilter] = useState<FilterState>(DEFAULT_FILTER)
+  const [filter, setFilter] = useState<FilterState>(() => defaultFilter('1970-01-01'))
   const [searchOpen, setSearchOpen] = useState(false)
 
   const route = useRoute()
@@ -32,7 +34,12 @@ export default function Page() {
   // 전자는 back으로 닫아 히스토리를 늘리지 않고, 후자는 되돌아갈 곳이 없어 해시만 지운다
   const openedInside = useRef(false)
 
-  useEffect(() => setToday(todayKey()), [])
+  useEffect(() => {
+    const t = todayKey()
+    setToday(t)
+    // 기본 날짜는 오늘이다. 오늘이 확정되는 시점이 마운트 이후라 여기서 채운다
+    setFilter((f) => ({ ...f, date: t }))
+  }, [])
 
   const districts = useMemo(() => availableDistricts(ALL_EVENTS), [])
 
@@ -89,7 +96,7 @@ export default function Page() {
         </div>
       </header>
 
-      <main className="main">
+      <main className={`main ${tab === 'map' ? 'main--map' : ''}`}>
         {!today ? (
           <p className="placeholder">불러오는 중…</p>
         ) : tab === 'home' ? (
@@ -98,27 +105,29 @@ export default function Page() {
             today={today}
             date={filter.date}
             kind={filter.kind}
+            district={filter.district}
             onDate={(v) => setField('date', v)}
             onKind={(v) => setField('kind', v)}
+            onDistrict={(v) => setField('district', v)}
             onOpen={openDetail}
-            onDistrictMore={goList}
             onDistrictMap={goMap}
           />
         ) : tab === 'list' ? (
           <ListView
             events={ALL_EVENTS}
             today={today}
-            districts={districts}
             filter={filter}
             onFilter={setField}
             onOpen={openDetail}
           />
         ) : (
-          <p className="placeholder">
-            지도는 카카오 JS 키 도메인 등록 후 붙습니다.
-            <br />
-            그 전까지는 전체 목록을 이용해주세요.
-          </p>
+          <MapView
+            events={ALL_EVENTS}
+            today={today}
+            filter={filter}
+            onFilter={setField}
+            onOpen={openDetail}
+          />
         )}
       </main>
 

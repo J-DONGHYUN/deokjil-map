@@ -7,7 +7,13 @@ import type { District, EventItem, EventKind } from '@/types'
  */
 export type DateKey = string
 
-export type DateFilter = 'today' | 'weekend' | 'all'
+/**
+ * 날짜 필터.
+ * 'all' 이거나 특정 하루('YYYY-MM-DD')다.
+ * 하루 단위로 좁히는 이유는 "오늘 뭐 열려?"가 제품의 질문이기 때문이다 —
+ * 기간이 겹치는 이벤트를 전부 보여주면 오늘 갈 수 있는 곳을 고를 수가 없다.
+ */
+export type DateFilter = 'all' | DateKey
 export type DistrictFilter = District | 'all'
 export type KindFilter = EventKind | 'all'
 
@@ -18,19 +24,23 @@ export interface FilterState {
   query: string
 }
 
-export const DEFAULT_FILTER: FilterState = {
-  district: 'all',
-  date: 'today',
-  kind: 'all',
-  query: '',
+/** 기본은 오늘. 앱을 열자마자 "오늘 뭐 열려?"에 답해야 한다 */
+export function defaultFilter(today: DateKey = todayKey()): FilterState {
+  return { district: 'all', date: today, kind: 'all', query: '' }
 }
 
+/** 표시 순서가 곧 홈 섹션 순서다. 팝업·생카 밀도가 높은 곳부터 */
 export const DISTRICT_LABELS: Record<District, string> = {
   hongdae: '홍대',
   hapjeong: '합정',
   seongsu: '성수',
   gangnam: '강남',
   konkuk: '건대',
+  yongsan: '용산',
+  jamsil: '잠실',
+  yeouido: '여의도',
+  myeongdong: '명동',
+  jongno: '종로',
   etc: '그 외',
 }
 
@@ -133,18 +143,25 @@ export function matchesQuery(ev: EventItem, query: string): boolean {
 }
 
 function matchesDate(ev: EventItem, date: DateFilter, today: DateKey): boolean {
-  switch (date) {
-    case 'today':
-      return isOngoing(ev, today)
-    case 'weekend': {
-      const [sat, sun] = weekendRange(today)
-      return overlaps(ev, sat, sun)
-    }
-    case 'all':
-      // 이미 끝난 이벤트는 목록에서 뺀다. 지난 정보는 없는 정보보다 나쁘다
-      return ev.ends_on >= today
-  }
+  // 이미 끝난 이벤트는 목록에서 뺀다. 지난 정보는 없는 정보보다 나쁘다 (4.3)
+  if (date === 'all') return ev.ends_on >= today
+  return overlaps(ev, date, date)
 }
+
+/** 날짜 이동. 오늘보다 과거로는 못 간다 — 지난 날짜엔 보여줄 것이 없다 */
+export function shiftDate(date: DateKey, days: number, today: DateKey = todayKey()): DateKey {
+  const next = shiftDays(date, days)
+  return next < today ? today : next
+}
+
+/** 네비게이터에 쓰는 문구. "8월 27일 (목) · 오늘" */
+const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토']
+
+export function dateLabel(date: DateKey): string {
+  const [, m, d] = date.split('-').map(Number)
+  return `${m}월 ${d}일 (${WEEKDAYS[dayOfWeek(date)]})`
+}
+
 
 /** 진행 중인 것 먼저, 그다음 시작이 빠른 순, 동률이면 종료가 임박한 순 */
 export function sortEvents(events: EventItem[], today: DateKey = todayKey()): EventItem[] {

@@ -605,3 +605,241 @@ a { color: inherit; }
 @media (min-width: 700px) {
   .sheet { box-shadow: 0 0 0 1px rgba(120, 60, 85, 0.05), 0 6px 32px rgba(120, 60, 85, 0.13); }
 }
+
+.sheet__original {
+  margin-top: 5px;
+  font-size: 14px;
+  color: var(--text-mute);
+  line-height: 1.45;
+}
+
+.sourcelink--sub {
+  margin-top: 8px;
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  color: var(--accent-ink);
+}
+
+.sourcelink--weak {
+  background: var(--surface);
+  border: 1px solid var(--border-mid);
+  color: var(--text-dim);
+}
+
+/* ── 지도 ─────────────────────────────────────────────── */
+/* 지도 탭은 남은 높이를 전부 쓴다. 고정 높이를 계산하면 컨트롤 바가 늘거나
+   줄 때마다 어긋나므로 flex 로 채운다 */
+.main--map { display: flex; flex-direction: column; padding-bottom: 0; }
+
+.mapwrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.mapcanvaswrap {
+  position: relative;
+  flex: 1;
+  min-height: 300px;
+}
+
+.mapcanvas {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-sunk);
+}
+
+.mapwrap__loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-sunk);
+}
+
+.mapwrap__count {
+  position: absolute;
+  top: 10px;
+  left: var(--gutter);
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border-mid);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-dim);
+  box-shadow: var(--shadow-card);
+}
+
+/* 핀을 눌렀을 때 뜨는 미니 카드 */
+.mapsheet {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border-mid);
+  box-shadow: 0 4px 20px rgba(120, 60, 85, 0.16);
+}
+.mapsheet__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  padding: 0;
+}
+.mapsheet__body strong { font-size: 16px; font-weight: 700; }
+.mapsheet__place { font-size: 13.5px; color: var(--text-dim); }
+.mapsheet__period { font-size: 12.5px; color: var(--accent-ink); font-weight: 600; }
+.mapsheet__close {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--bg-sunk);
+  color: var(--text-dim);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.mapfallback { padding-top: 8px; }
+
+/* ── 지도 라벨 핀 ─────────────────────────────────────────
+   기본 마커는 전부 똑같이 생겨서 눌러보기 전엔 무슨 행사인지 알 수 없다.
+   대상명과 유형을 얹어 지도만 보고도 스캔되게 한다.
+   ------------------------------------------------------- */
+.pin {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 168px;
+  padding: 6px 11px 6px 7px;
+  border: 1.5px solid var(--accent);
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 2px 8px rgba(120, 60, 85, 0.22);
+  cursor: pointer;
+  white-space: nowrap;
+  /* 오버레이는 지도 위에 얹히므로 폰트를 명시한다 */
+  font-family: inherit;
+}
+
+.pin__kind {
+  flex: 0 0 auto;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.pin__name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 핀 꼬리 — 정확한 좌표를 가리킨다 */
+.pin__tail {
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 0;
+  height: 0;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 7px solid var(--accent);
+}
+
+/* 생카는 팝업과 색으로 구분한다 */
+.pin--birthday_cafe { border-color: #4a4fb5; }
+.pin--birthday_cafe .pin__kind { background: #4a4fb5; }
+.pin--birthday_cafe .pin__tail { border-top-color: #4a4fb5; }
+
+/* ── 날짜 네비게이터 ──────────────────────────────────────
+   칩(오늘/주말/전체)으로는 "모레 뭐 열려?"에 답할 수 없었다.
+   하루씩 옮기는 편이 팬덤의 실제 질문에 맞는다.
+   ------------------------------------------------------- */
+.datenav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px var(--gutter);
+}
+
+.datenav__arrow {
+  flex: 0 0 auto;
+  width: var(--tap);
+  height: 40px;
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--accent-ink);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.datenav__arrow:disabled {
+  color: var(--text-mute);
+  opacity: 0.45;
+  cursor: default;
+}
+
+.datenav__label {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  cursor: pointer;
+}
+.datenav__label--muted { background: var(--bg-sunk); }
+
+.datenav__date { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+.datenav__all {
+  flex: 0 0 auto;
+  height: 40px;
+  padding: 0 13px;
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-dim);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.datenav__all--on {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* 지도 위 컨트롤 — 지도가 화면을 꽉 채우므로 그 위에 얹지 않고 바로 위에 둔다 */
+.mapcontrols { padding-top: 4px; padding-bottom: 6px; }
+
+.mapwrap__sep { margin: 0 5px; color: var(--border-mid); }
+.mapwrap__radius { font-weight: 600; color: var(--text-mute); }

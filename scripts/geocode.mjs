@@ -69,6 +69,14 @@ async function lookup(query, kind) {
   return { lat: Number(doc.y), lng: Number(doc.x) }
 }
 
+/**
+ * 도로명(로/길 + 번호) 또는 지번 번호가 들어 있는지.
+ * 없으면 행정구역 중심점이 잡히므로 주소 검색을 쓰지 않는다.
+ */
+function hasStreetLevel(address) {
+  return /(로|길)\s*\d/.test(address) || /\d+\s*(번지|-\d+)/.test(address)
+}
+
 function inSeoul({ lat, lng }) {
   return lat >= SEOUL.minLat && lat <= SEOUL.maxLat && lng >= SEOUL.minLng && lng <= SEOUL.maxLng
 }
@@ -87,9 +95,15 @@ for (const ev of events) {
 
   let hit = null
   try {
-    // 주소 우선. 실패하면 상호명으로 재시도 — 신설 카페는 주소 DB에 늦게 오른다
-    if (p.address) hit = await lookup(p.address, 'address')
+    // 도로명·지번이 있는 주소만 address 검색에 쓴다.
+    // "서울 성동구"처럼 구 단위까지만 있으면 구청 좌표가 잡혀서 서로 다른 장소가
+    // 같은 점에 찍힌다 — 서울 안이라 경계 검사로도 안 걸리는 조용한 오류다
+    if (p.address && hasStreetLevel(p.address)) {
+      hit = await lookup(p.address, 'address')
+    }
+    // 그 외에는 상호명으로 찾는다. 신설 카페도 주소 DB보다 키워드에 먼저 오른다
     if (!hit && p.name) hit = await lookup(`${p.name} ${p.address ?? ''}`.trim(), 'keyword')
+    if (!hit && p.address) hit = await lookup(p.address, 'address')
   } catch (err) {
     failures.push({ id: ev.id, name: p.name, reason: err.message })
     await sleep(DELAY_MS)
@@ -114,9 +128,31 @@ for (const ev of events) {
   await sleep(DELAY_MS)
 }
 
+// 서로 다른 장소가 같은 점에 찍혔는지 확인한다.
+// 행정구역 중심점으로 뭉치는 오류가 여기서 드러난다
+const byPoint = new Map()
+for (const ev of events) {
+  const { lat, lng } = ev.place
+  if (!lat || !lng) continue
+  const key = `${lat.toFixed(5)},${lng.toFixed(5)}`
+  if (!byPoint.has(key)) byPoint.set(key, [])
+  byPoint.get(key).push(`${ev.id} ${ev.place.name}`)
+}
+const collisions = [...byPoint.entries()].filter(([, list]) => list.length > 1)
+
 writeFileSync(TARGET, JSON.stringify(events, null, 2) + '\n', 'utf8')
 
 console.log(`\n채움 ${filled} · 건너뜀 ${skipped} · 실패 ${failures.length}`)
+
+if (collisions.length) {
+  console.log('\n같은 좌표에 뭉친 장소 — 주소가 구 단위까지만 있는지 확인하세요:')
+  for (const [point, list] of collisions) {
+    console.log(`  ${point}`)
+    for (const item of list) console.log(`    ${item}`)
+  }
+  process.exitCode = 1
+}
+
 if (failures.length) {
   console.log('\n좌표를 못 채운 항목 — 수동 확인이 필요합니다:')
   for (const f of failures) console.log(`  ${f.id} ${f.name}: ${f.reason}`)

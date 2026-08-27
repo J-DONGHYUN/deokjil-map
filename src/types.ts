@@ -8,11 +8,18 @@
 
 /** 구역. 커버 범위가 늘면 여기에 추가한다 */
 export type District =
+  // 세부 구역 — 팬덤 동선의 단위라 구(區)보다 앞선다
   | 'hongdae'   // 홍대
   | 'hapjeong'  // 합정
   | 'seongsu'   // 성수
   | 'gangnam'   // 강남
   | 'konkuk'    // 건대
+  // 구 단위 — 세부 구역에 안 걸리는 나머지를 담는다
+  | 'yongsan'   // 용산 (아이파크몰 등)
+  | 'jamsil'    // 잠실 (롯데월드몰 등)
+  | 'yeouido'   // 여의도 (더현대 서울 등)
+  | 'jongno'    // 종로
+  | 'myeongdong' // 명동 · 중구
   | 'etc'       // 그 외 서울
 
 export type PlaceKind = 'cafe' | 'popup_venue'
@@ -65,13 +72,25 @@ export interface EventItem {
   /** 음료 1잔 주문 등 */
   conditions?: string
   /**
+   * 원제. subject 가 아티스트명으로 정규화되므로 원래 행사명을 따로 남긴다.
+   * (예: subject "키스오브라이프" / title "아임도넛 X 키스오브라이프 팝업 @홍대")
+   */
+  title?: string
+  /**
    * 대표 이미지. 주최자·운영사가 공개한 안내 이미지의 URL.
    * 없거나 로드에 실패하면 대상명 기반 색 블록으로 폴백한다(EventCard 참조).
    * 원문 링크(source_url)를 항상 함께 노출해 출처를 밝힌다.
    */
   image_url?: string
-  /** 원문 링크. 출처 표기 필수 — 화면에서 반드시 노출한다 */
+  /**
+   * 원문 링크. 출처 표기 필수 — 화면에서 반드시 노출한다.
+   * 가능하면 주최자·운영사의 공식 게시물을 가리킨다.
+   */
   source_url: string
+  /** 리스팅 출처. source_url 이 공식 원문일 때 우리가 참고한 곳을 함께 밝힌다 */
+  listing_url?: string
+  /** 사전예약 링크 */
+  reservation_url?: string
   trust: Trust
   goods: Goods[]
 }

@@ -38,6 +38,9 @@ export default function EventDetail({ event, today, onClose, onOpenSource }: Pro
     }
   }, [])
 
+  // 주최자·운영사가 직접 올린 곳인지. 리스팅 사이트로 떨어진 경우와 구분한다
+  const official = /instagram\.com|x\.com|twitter\.com/.test(event.source_url)
+
   const sw = swatchFor(event)
   const left = daysLeft(event, today)
   const urgent = left >= 0 && left <= 1
@@ -74,6 +77,9 @@ export default function EventDetail({ event, today, onClose, onOpenSource }: Pro
             </span>
           </div>
           <h2 className="sheet__title">{event.subject}</h2>
+          {event.title && event.title !== event.subject && (
+            <p className="sheet__original">{event.title}</p>
+          )}
           <p className="sheet__place">
             <span className="card__district">{DISTRICT_LABELS[event.place.district]}</span>
             {event.place.name}
@@ -110,16 +116,28 @@ export default function EventDetail({ event, today, onClose, onOpenSource }: Pro
           </section>
         )}
 
-        {/* 원문 링크는 필수 노출이다 (poc-plan 1번 정합성 교란 방어) */}
+        {/* 원문 링크는 필수 노출이다 (poc-plan 1번 정합성 교란 방어).
+            주최자·운영사의 공식 게시물일 때만 주요 동선으로 올린다 */}
         <a
-          className="sourcelink"
+          className={`sourcelink ${official ? '' : 'sourcelink--weak'}`}
           href={event.source_url}
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => onOpenSource(event)}
         >
-          원문 공지 보기 ↗
+          {official ? '공식 공지 보기 ↗' : '정보 원문 보기 ↗'}
         </a>
+
+        {event.reservation_url && (
+          <a
+            className="sourcelink sourcelink--sub"
+            href={event.reservation_url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            사전예약 하기 ↗
+          </a>
+        )}
 
         <p className="sheet__disclaimer">
           주최자 공지를 정리한 정보입니다. 변경될 수 있으니 방문 전 원문을 확인해주세요.
