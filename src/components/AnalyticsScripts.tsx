@@ -1,6 +1,16 @@
 import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
-import { CLARITY_ID, GA4_ID } from '@/lib/analytics'
+
+/**
+ * 환경변수를 여기서 직접 읽는다.
+ *
+ * lib/analytics.ts 는 'use client' 모듈이라, 거기서 export 한 상수를
+ * 서버 컴포넌트가 import 하면 값이 아니라 클라이언트 참조로 치환된다.
+ * 실제로 그렇게 짰다가 배포에서 스크립트 URL 이
+ * `gtag/js?id=function(){throw Error(...)}` 로 나갔다.
+ */
+const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID ?? ''
+const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID ?? ''
 
 /**
  * 계측 스크립트 삽입.

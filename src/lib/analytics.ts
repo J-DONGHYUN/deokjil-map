@@ -15,8 +15,14 @@
  * 키가 하나도 없어도 개발이 막히지 않도록, 없으면 콘솔로만 찍는다.
  */
 
-export const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID ?? ''
-export const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID ?? ''
+/**
+ * 이 상수는 클라이언트 전용이다.
+ * 서버 컴포넌트에서 import 하지 말 것 — 'use client' 모듈의 export 는
+ * 서버에서 값이 아니라 클라이언트 참조로 치환된다.
+ * 스크립트 삽입은 components/AnalyticsScripts.tsx 가 env 를 직접 읽어서 한다.
+ */
+const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID ?? ''
+const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID ?? ''
 
 /**
  * 계측 이벤트. poc-plan 7번의 표와 1:1로 대응한다.
