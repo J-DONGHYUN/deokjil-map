@@ -32,8 +32,8 @@ permissions:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    # 크롤은 요청 간격 700ms 고정이라 8분 이상 걸린다. 넉넉히 준다
-    timeout-minutes: 30
+    # 요청 1400건 × 700ms 간격 = 최소 16분. 네트워크 지연까지 보면 20분대다
+    timeout-minutes: 45
 
     steps:
       - uses: actions/checkout@v4
