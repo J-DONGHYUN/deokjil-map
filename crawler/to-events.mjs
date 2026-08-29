@@ -31,12 +31,42 @@ const SEOUL_PREFIX = '서울'
  * 순서가 중요하다 — 세부 구역(홍대·합정·성수)이 구(區) 단위보다 먼저 걸려야 한다.
  * 팬덤의 동선 단위가 "마포구"가 아니라 "홍대"이기 때문이다.
  * 세부 구역에 안 걸리는 것만 구 단위로 떨어진다.
+ *
+ * 도로명은 동(洞) 이름과 다르다. '동교동'만 넣으면 '동교로34길'이 통째로 샌다 —
+ * 실제로 홍대 권역 23건이 'etc'에 쌓여 있었다. 도로명을 따로 나열하는 이유다.
+ *
+ * 반대로 넓게 잡으면 다른 구의 같은 이름에 걸린다. 광진구에도 뚝섬로가 있고
+ * 은평구에도 신사동이 있다. 그런 이름은 구(區)와 함께 볼 때만 인정한다.
  */
 const DISTRICT_RULES = [
-  { district: 'hongdae', test: (a) => /서교동|홍대|동교동|와우산로|어울마당로|홍익로/.test(a) },
-  { district: 'hapjeong', test: (a) => /합정|양화로|독막로|잔다리로/.test(a) },
-  { district: 'seongsu', test: (a) => /성수|연무장|아차산로|뚝섬|서울숲/.test(a) },
-  { district: 'gangnam', test: (a) => /강남|신사|압구정|청담|삼성동|역삼|논현/.test(a) },
+  {
+    district: 'hongdae',
+    // 연남·동교는 홍대와 걸어서 이어지는 한 동선이라 따로 가르지 않는다.
+    // 마포구 신촌로는 홍대입구역 권역이다 — 서대문구 신촌로(진짜 신촌)와 다르다
+    test: (a) =>
+      /서교동|홍대|홍익로|와우산로|어울마당로|동교동|동교로|성미산로|월드컵북로|연남/.test(a) ||
+      (/마포구/.test(a) && /신촌로/.test(a)) ||
+      // 양화로는 합정역에서 홍대입구역까지 관통해 이름만으로는 못 가른다.
+      // 홍대입구역이 160번대라 150 이상을 홍대로 본다. 그 아래는 합정 규칙이 받는다
+      /양화로\s*(1[5-9]\d|[2-9]\d\d)/.test(a),
+  },
+  {
+    // 망원은 합정에 붙인다. 도보권이고 단독으로는 표본이 너무 적다
+    district: 'hapjeong',
+    test: (a) => /합정|양화로|독막로|잔다리로|망원|희우정로|월드컵로/.test(a),
+  },
+  {
+    // 뚝섬로·아차산로는 광진구에도 있다. 성동구일 때만 성수로 본다
+    district: 'seongsu',
+    test: (a) => /성수|연무장|서울숲/.test(a) || (/성동구/.test(a) && /뚝섬|아차산로/.test(a)),
+  },
+  {
+    // '신사'는 은평구에도 있다. 강남·서초 안에서만 인정한다
+    district: 'gangnam',
+    test: (a) =>
+      /강남|압구정|청담|삼성동|역삼|논현|테헤란로/.test(a) ||
+      (/강남구|서초구/.test(a) && /신사/.test(a)),
+  },
   { district: 'konkuk', test: (a) => /건대|화양동|능동로/.test(a) },
   { district: 'jamsil', test: (a) => /잠실|송파구|올림픽로/.test(a) },
   { district: 'yeouido', test: (a) => /여의도|여의대로|영등포구/.test(a) },
@@ -110,9 +140,23 @@ function parseBirthdayCafe(title) {
   return { subject: m[1].trim(), place: m[2]?.trim() || null }
 }
 
-function districtOf(address) {
-  const hit = DISTRICT_RULES.find((r) => r.test(address))
-  return hit ? hit.district : 'etc'
+/**
+ * 주소가 정본이다.
+ *
+ * 태그를 주소와 한 덩어리로 붙여 보면 다른 지점명·행사 태그가 섞여
+ * "중구 남대문로"가 강남으로 분류된다. 여러 지점을 함께 여는 팝업은
+ * 태그에 지점명이 전부 들어 있어서다.
+ *
+ * 그래서 주소로 먼저 판정하고, 주소만으로 못 가른 것에만 태그를 본다.
+ * 태그에는 구(區)가 없으므로 구 조건이 붙은 규칙은 태그로 걸리지 않는다 —
+ * 그게 의도한 동작이다.
+ */
+function districtOf(address, tags = '') {
+  const byAddress = DISTRICT_RULES.find((r) => r.test(address))
+  if (byAddress) return byAddress.district
+
+  const byTag = tags ? DISTRICT_RULES.find((r) => r.test(tags)) : null
+  return byTag ? byTag.district : 'etc'
 }
 
 /**
@@ -156,7 +200,7 @@ function toEvent(rec, artist) {
       address,
       lat: rec.latitude,
       lng: rec.longitude,
-      district: districtOf(`${address} ${rec.tags.join(' ')}`),
+      district: districtOf(address, rec.tags.join(' ')),
       kind: cafe ? 'cafe' : 'popup_venue',
     },
     // 카드에는 대상명이 앞에 와야 한다.
