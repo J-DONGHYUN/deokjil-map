@@ -1,0 +1,51 @@
+{
+  "source": "서울 열린데이터광장 OA-21778 · 주요 121장소 목록/영역",
+  "note": "scripts/hotspots.mjs 로 생성한다. 손으로 고치지 말 것",
+  "districts": {
+    "hongdae": {
+      "code": "POI007",
+      "name": "홍대 관광특구",
+      "category": "관광특구"
+    },
+    "yongsan": {
+      "code": "POI046",
+      "name": "용산역",
+      "category": "인구밀집지역"
+    },
+    "hapjeong": {
+      "code": "POI053",
+      "name": "합정역",
+      "category": "인구밀집지역"
+    },
+    "seongsu": {
+      "code": "POI068",
+      "name": "성수카페거리",
+      "category": "발달상권"
+    },
+    "gangnam": {
+      "code": "POI001",
+      "name": "강남 MICE 관광특구",
+      "category": "관광특구"
+    },
+    "myeongdong": {
+      "code": "POI003",
+      "name": "명동 관광특구",
+      "category": "관광특구"
+    },
+    "yeouido": {
+      "code": "POI072",
+      "name": "여의도",
+      "category": "발달상권"
+    },
+    "jamsil": {
+      "code": "POI119",
+      "name": "잠실역",
+      "category": "인구밀집지역"
+    },
+    "jongno": {
+      "code": "POI009",
+      "name": "광화문·덕수궁",
+      "category": "고궁·문화유산"
+    }
+  }
+}

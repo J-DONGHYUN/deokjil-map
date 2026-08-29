@@ -36,6 +36,20 @@
   --wait-30:   #d97706;
   --wait-60:   #dc2626;
 
+  /* 구역 혼잡도 4단계 (서울시 실시간 인구데이터).
+     위의 --wait-* 와 일부러 다른 계열을 쓴다. 그건 '이 매장 대기 시간'(제보)이고
+     이건 '이 동네 사람 수'(통신사 추정)라, 같은 색을 쓰면 나중에 둘이 같이
+     화면에 놓였을 때 사용자가 구분할 수 없다.
+     accent 핑크와 부딪히지 않도록 채도를 낮춰 잡았다. */
+  --crowd-calm:        #1f7a4d;
+  --crowd-calm-soft:   #e6f4ec;
+  --crowd-normal:      #35688c;
+  --crowd-normal-soft: #e8f0f6;
+  --crowd-busy:        #a8640f;
+  --crowd-busy-soft:   #fbf0dd;
+  --crowd-packed:      #9c3030;
+  --crowd-packed-soft: #f9e8e8;
+
   --gutter:    16px;   /* 좌우 시작선. 헤더·칩·섹션·카드가 전부 이 값을 쓴다 */
   --radius:    14px;
   --radius-sm: 10px;
@@ -1194,3 +1208,156 @@ a { color: inherit; }
 
 .mapwrap__sep { margin: 0 5px; color: var(--border-mid); }
 .mapwrap__radius { font-weight: 600; color: var(--text-mute); }
+
+
+/* ── 홈 보기 토글 ─────────────────────────────────────────
+   '전체'가 별도 탭이던 것을 여기로 내렸다. 같은 목록을 날짜만 풀어 보는
+   것이라 탭을 왕복시킬 만한 차이가 아니었다.
+   ------------------------------------------------------- */
+.modetoggle {
+  display: flex;
+  gap: 3px;
+  margin: 2px var(--gutter) 0;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--bg-sunk);
+}
+.modetoggle__item {
+  flex: 1;
+  min-height: 36px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--text-dim);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.modetoggle__item--on {
+  background: var(--surface);
+  color: var(--accent-ink);
+  box-shadow: var(--shadow-card);
+}
+
+/* ── 실시간 혼잡도 ────────────────────────────────────────
+   여기 값은 전부 **구역**의 것이지 개별 행사의 것이 아니다.
+   그래서 카드 제목에 서울시가 정한 관측소 이름을 그대로 쓰고,
+   우리 구역명은 아래 줄에 보조로 둔다. 이벤트 핀·카드에는 절대 칠하지 않는다.
+   ------------------------------------------------------- */
+.livehead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px var(--gutter) 0;
+}
+.livehead__title { font-size: 18px; font-weight: 800; }
+.livehead__note { margin-top: 2px; font-size: 12.5px; color: var(--text-mute); }
+.livehead__refresh {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 0 13px;
+  border: 1px solid var(--border-mid);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-dim);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* 이 화면에서 가장 오해받기 쉬운 지점이라 문장으로 못 박는다 */
+.livenotice {
+  margin: 10px var(--gutter) 0;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunk);
+  color: var(--text-dim);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.livekey {
+  margin: 8px var(--gutter) 0;
+  padding: 10px 12px;
+  border: 1px dashed var(--border-mid);
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.livekey code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--bg-sunk);
+  font-size: 12px;
+}
+
+.livecard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 13px 14px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border-mid);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  text-align: left;
+  cursor: pointer;
+}
+.livecard--calm   { border-left-color: var(--crowd-calm); }
+.livecard--normal { border-left-color: var(--crowd-normal); }
+.livecard--busy   { border-left-color: var(--crowd-busy); }
+.livecard--packed { border-left-color: var(--crowd-packed); }
+
+/* 값을 못 받은 구역. 자리를 지우지 않는 이유는 '오늘 행사가 있는 곳'이라는
+   사실은 그대로이기 때문이다. 혼잡도만 비운다 */
+.livecard--off { cursor: default; opacity: 0.7; }
+
+/* 갱신이 멈춘 값. 오래된 실시간 데이터는 없는 것보다 나쁘다 */
+.livecard--stale { opacity: 0.55; }
+
+.livecard__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.livecard__spot {
+  flex: 1;
+  min-width: 0;
+  font-size: 15.5px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.livecard__level {
+  flex: 0 0 auto;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+.livecard__level--calm   { background: var(--crowd-calm-soft);   color: var(--crowd-calm); }
+.livecard__level--normal { background: var(--crowd-normal-soft); color: var(--crowd-normal); }
+.livecard__level--busy   { background: var(--crowd-busy-soft);   color: var(--crowd-busy); }
+.livecard__level--packed { background: var(--crowd-packed-soft); color: var(--crowd-packed); }
+.livecard__level--off {
+  background: var(--gone-soft);
+  color: var(--text-mute);
+  font-weight: 600;
+}
+
+.livecard__where { font-size: 12.5px; color: var(--text-dim); }
+.livecard__figure { margin-top: 4px; font-size: 14px; font-weight: 700; }
+.livecard__visitor { font-weight: 600; color: var(--text-dim); }
+.livecard__msg { font-size: 12.5px; color: var(--text-dim); line-height: 1.5; }
+.livecard__fcst {
+  margin-top: 3px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--accent-ink);
+}
+.livecard__time { margin-top: 3px; font-size: 11.5px; color: var(--text-mute); }

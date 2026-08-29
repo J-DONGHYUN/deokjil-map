@@ -13,8 +13,8 @@ import {
 } from '@/lib/filters'
 import { track, trackVisit } from '@/lib/analytics'
 import BottomNav, { type Tab } from '@/components/BottomNav'
-import HomeView from '@/components/HomeView'
-import ListView from '@/components/ListView'
+import HomeView, { type HomeMode } from '@/components/HomeView'
+import LiveView from '@/components/LiveView'
 import MapView from '@/components/MapView'
 import SearchOverlay from '@/components/SearchOverlay'
 import EventDetail from '@/components/EventDetail'
@@ -27,6 +27,9 @@ export default function Page() {
   // 서버 프리렌더 시점(빌드 시각)을 쓰면 배포 다음날부터 하이드레이션이 어긋난다.
   const [today, setToday] = useState<string | null>(null)
   const [tab, setTab] = useState<Tab>('home')
+  // 홈이 지역별로 묶어 보여줄지, 날짜를 풀고 전부 나열할지.
+  // 예전엔 탭 두 개였는데 같은 목록이라 홈 안의 토글로 내렸다
+  const [homeMode, setHomeMode] = useState<HomeMode>('district')
   const [filter, setFilter] = useState<FilterState>(() => defaultFilter('1970-01-01'))
   const [searchOpen, setSearchOpen] = useState(false)
 
@@ -77,11 +80,6 @@ export default function Page() {
     [route],
   )
 
-  const goList = useCallback((district: DistrictFilter) => {
-    setFilter((f) => ({ ...f, district }))
-    setTab('list')
-  }, [])
-
   const goMap = useCallback((district: DistrictFilter) => {
     setFilter((f) => ({ ...f, district }))
     setTab('map')
@@ -95,9 +93,9 @@ export default function Page() {
             <h1 className="header__title">모여라덕</h1>
             <p className="header__sub">오늘 서울 어디서 뭐 하지?</p>
           </div>
-          {/* 목록 탭에는 자체 검색창이 있다. 여기까지 두면 같은 일을 하는
+          {/* 전체 목록에는 자체 검색창이 있다. 여기까지 두면 같은 일을 하는
               입구가 둘이 되고, 어느 쪽이 목록에 반영되는지 헷갈린다 */}
-          {tab !== 'list' && (
+          {!(tab === 'home' && homeMode === 'all') && (
             <button
               type="button"
               className="header__search"
@@ -117,23 +115,21 @@ export default function Page() {
           <HomeView
             events={ALL_EVENTS}
             today={today}
+            mode={homeMode}
             date={filter.date}
             kind={filter.kind}
             district={filter.district}
+            query={filter.query}
+            onMode={setHomeMode}
             onDate={(v) => setField('date', v)}
             onKind={(v) => setField('kind', v)}
             onDistrict={(v) => setField('district', v)}
+            onQuery={(v) => setField('query', v)}
             onOpen={openDetail}
             onDistrictMap={goMap}
           />
-        ) : tab === 'list' ? (
-          <ListView
-            events={ALL_EVENTS}
-            today={today}
-            filter={filter}
-            onFilter={setField}
-            onOpen={openDetail}
-          />
+        ) : tab === 'live' ? (
+          <LiveView events={ALL_EVENTS} today={today} onDistrictMap={goMap} />
         ) : (
           <MapView
             events={ALL_EVENTS}

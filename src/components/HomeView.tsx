@@ -18,15 +18,26 @@ import DateNav from './DateNav'
 import Section from './Section'
 import EventCard from './EventCard'
 
+/**
+ * 홈이 무엇을 기준으로 묶고 있는가.
+ *  - 'district' 지역별 섹션. "오늘 어디서 뭐 하지?"
+ *  - 'all'      날짜를 풀고 잡혀 있는 일정 전부. "앞으로 뭐가 있지?"
+ */
+export type HomeMode = 'district' | 'all'
+
 interface Props {
   events: EventItem[]
   today: string
+  mode: HomeMode
   date: DateFilter
   kind: KindFilter
   district: DistrictFilter
+  query: string
+  onMode: (v: HomeMode) => void
   onDate: (v: DateFilter) => void
   onKind: (v: KindFilter) => void
   onDistrict: (v: DistrictFilter) => void
+  onQuery: (v: string) => void
   onOpen: (id: string) => void
   /** 지역 섹션의 지도 바로가기 */
   onDistrictMap: (district: DistrictFilter) => void
@@ -38,20 +49,32 @@ const KIND_OPTIONS: ChipOption<KindFilter>[] = [
   { value: 'popup', label: '팝업' },
 ]
 
+const MODE_OPTIONS: { value: HomeMode; label: string }[] = [
+  { value: 'district', label: '지역별' },
+  { value: 'all', label: '전체 목록' },
+]
+
 /**
  * 홈은 "어디서 오늘 뭐 하느냐"에 답한다.
  * 그래서 묶는 축이 날짜가 아니라 지역이다 — 날짜는 칩이 담당하고,
  * 섹션은 전부 지역이다. 기존 서비스와 갈리는 지점이 여기다.
+ *
+ * '전체 목록'은 예전에 별도 탭이었다. 같은 데이터를 날짜만 풀어 보여주는
+ * 것이라 탭을 왕복시킬 만한 차이가 아니어서 토글로 내렸다.
  */
 export default function HomeView({
   events,
   today,
+  mode,
   date,
   kind,
   district,
+  query,
+  onMode,
   onDate,
   onKind,
   onDistrict,
+  onQuery,
   onOpen,
   onDistrictMap,
 }: Props) {
@@ -66,6 +89,21 @@ export default function HomeView({
         today,
       ),
     [events, kind, date, today],
+  )
+
+  /**
+   * 전체 목록. 날짜·지역을 풀고 검색어만 건다 —
+   * 여기는 "잡혀 있는 일정 전부"를 훑는 자리라, 필터를 겹치면 무엇이 빠졌는지
+   * 알 수 없게 된다.
+   */
+  const allList = useMemo<EventItem[]>(
+    () =>
+      filterEvents(
+        events,
+        { district: 'all', kind, date: 'all', query } satisfies FilterState,
+        today,
+      ),
+    [events, kind, query, today],
   )
 
   // 차별점이 놓이는 자리. P1에서 품절 배지가 여기 붙는다
@@ -99,8 +137,59 @@ export default function HomeView({
     [events, kind, district, today],
   )
 
+  const modeToggle = (
+    <div className="modetoggle" role="group" aria-label="보기 방식">
+      {MODE_OPTIONS.map((o) => (
+        <button
+          key={o.value}
+          type="button"
+          className={`modetoggle__item ${mode === o.value ? 'modetoggle__item--on' : ''}`}
+          aria-pressed={mode === o.value}
+          onClick={() => onMode(o.value)}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  )
+
+  if (mode === 'all') {
+    return (
+      <>
+        {modeToggle}
+
+        <input
+          className="search"
+          type="search"
+          value={query}
+          placeholder="대상 · 카페명 · 지역 검색"
+          onChange={(e) => onQuery(e.target.value)}
+          aria-label="검색"
+        />
+
+        <div className="filterbar">
+          <Chips label="유형" options={KIND_OPTIONS} value={kind} onChange={onKind} />
+        </div>
+
+        <p className="count">진행 예정 전체 {allList.length}건</p>
+
+        {allList.length === 0 ? (
+          <p className="placeholder">조건에 맞는 곳이 없어요.</p>
+        ) : (
+          <div className="rows">
+            {allList.map((ev) => (
+              <EventCard key={ev.id} event={ev} today={today} variant="row" onOpen={onOpen} />
+            ))}
+          </div>
+        )}
+      </>
+    )
+  }
+
   return (
     <>
+      {modeToggle}
+
       <div className="filterbar">
         <DateNav value={date} today={today} onChange={onDate} counts={dateCounts} />
         <Chips label="지역" options={districtOptions} value={district} onChange={onDistrict} />
