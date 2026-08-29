@@ -16,6 +16,8 @@ const OUT = args.includes('--out') ? args[args.indexOf('--out') + 1] : 'src/data
 const KEEP_ALL = args.includes('--all')
 const IN_POPGA = 'data/raw/crawl/popga.json'
 const IN_OFFMATE = 'data/raw/crawl/offmate.json'
+// 화이트리스트 누락 후보 리포트. 데이터가 아니라 점검용이라 커밋하지 않는다
+const MISS_OUT = 'data/miss-candidates.json'
 
 function readRecords(path) {
   if (!existsSync(path)) return []
@@ -286,14 +288,39 @@ const today = new Date().toISOString().slice(0, 10)
 const popgaRecords = readRecords(IN_POPGA)
 const offmateRecords = readRecords(IN_OFFMATE)
 
-const rows = popgaRecords
+const inSeoulAndOpen = popgaRecords
   .filter((r) => (r.roadAddress || r.address || '').startsWith(SEOUL_PREFIX))
   .filter((r) => typeof r.latitude === 'number' && typeof r.longitude === 'number')
   .filter((r) => r.closeDate >= today) // 끝난 것은 목록에서 뺀다 (poc-plan 4.3)
   .map((r) => ({ rec: r, artist: matchArtist(r), cafe: parseBirthdayCafe(r.title) }))
+
+const rows = inSeoulAndOpen
   // 생일카페는 그 자체가 팬덤 행사라 화이트리스트를 통과시킨다.
   // 멤버 이름이 목록에 없어도 "○○ 생일카페"면 K-pop 행사로 본다
   .filter(({ artist, cafe }) => KEEP_ALL || artist || cafe)
+
+/**
+ * 화이트리스트 누락 후보.
+ *
+ * 화이트리스트에 없는 팀은 조용히 사라진다 — 그게 이 방식의 대가다.
+ * 문제는 "빠졌다"는 사실 자체가 아무 신호도 내지 않는다는 것이다.
+ * 신인이 데뷔할 때마다 커버리지가 깎이는데 아무도 모른다.
+ *
+ * 그래서 연예인·셀럽 카테고리인데 이름을 못 맞춘 것을 후보로 뽑아둔다.
+ * 사람이 훑어보고 진짜 K-pop 이면 crawler/kpop-artists.json 에 추가하면 된다.
+ * 자동으로 통과시키지 않는 이유는, 카테고리만 믿으면 배우·유튜버·일본
+ * 가수까지 들어오기 때문이다 (그래서 애초에 화이트리스트를 쓴다).
+ */
+const missCandidates = inSeoulAndOpen
+  .filter(({ artist, cafe }) => !artist && !cafe)
+  .filter(({ rec }) => rec.categories.some((c) => /연예인|셀럽|아이돌/.test(c)))
+  .filter(({ rec }) => !isNonKpopIp(rec))
+  .map(({ rec }) => ({
+    title: rec.title,
+    categories: rec.categories,
+    url: rec.source_url,
+    ends_on: rec.closeDate,
+  }))
 
 // 오프메이트는 전국이라 서울만 남긴다. 좌표가 없으면 지도에 못 찍으니 제외한다
 const cafeEvents = offmateRecords
@@ -335,5 +362,15 @@ console.log(
 )
 // 조용히 줄어들면 수집이 깨진 것과 구분되지 않는다. 항상 드러낸다
 if (dropped) console.log(`원문 없어 제외: ${dropped}건`)
+
+// 후보는 파일로도 남긴다 — 자동 갱신이 새벽에 돌아 로그를 아무도 안 볼 때,
+// 워크플로가 이 파일을 읽어 실행 요약에 붙인다
+writeFileSync(MISS_OUT, JSON.stringify(missCandidates, null, 2) + '\n', 'utf8')
+
+if (missCandidates.length) {
+  console.log(`\n화이트리스트 누락 후보 ${missCandidates.length}건 — ${MISS_OUT}`)
+  console.log('  (K-pop 이면 crawler/kpop-artists.json 에 추가하고 이 스크립트만 다시 돌린다)')
+  for (const c of missCandidates) console.log(`  - ${c.title}`)
+}
 console.log('구역별:', byDistrict)
 console.log(`저장: ${OUT}`)

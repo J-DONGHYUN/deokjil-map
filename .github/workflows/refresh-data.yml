@@ -52,6 +52,27 @@ jobs:
       - name: 정규화
         run: node crawler/to-events.mjs
 
+      - name: 누락 후보 요약
+        # 새벽에 도는 잡이라 로그를 아무도 안 본다. 실행 요약에 붙여 두면
+        # Actions 탭에서 바로 보이고, 사람이 훑어보고 화이트리스트에 추가할 수 있다
+        if: always()
+        run: |
+          node -e '
+            const fs = require("fs")
+            const p = "data/miss-candidates.json"
+            if (!fs.existsSync(p)) process.exit(0)
+            const c = JSON.parse(fs.readFileSync(p, "utf8"))
+            let md = "## 화이트리스트 누락 후보 " + c.length + "건\n\n"
+            if (!c.length) md += "없음.\n"
+            else {
+              md += "연예인·셀럽 카테고리인데 `crawler/kpop-artists.json` 에 이름이 없어 빠진 것들이다.\n"
+              md += "K-pop 이면 그 파일에 추가하고 `node crawler/to-events.mjs` 만 다시 돌리면 된다.\n\n"
+              md += "| 제목 | 종료일 | 원본 |\n|---|---|---|\n"
+              for (const x of c) md += "| " + x.title + " | " + x.ends_on + " | [링크](" + x.url + ") |\n"
+            }
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, md)
+          '
+
       - name: 검증
         # 크롤러가 조용히 깨졌을 때 빈 데이터를 커밋해 앱을 비우는 것을 막는다.
         # 실패해야 할 것은 실패하게 두는 편이, 틀린 데이터가 배포되는 것보다 낫다

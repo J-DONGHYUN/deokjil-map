@@ -26,3 +26,6 @@ sitemap*.xml
 om*.xml
 *_detail.html
 chunks.txt
+
+# 화이트리스트 누락 후보 리포트 — 점검용 산출물이라 커밋하지 않는다
+data/miss-candidates.json

@@ -115,6 +115,29 @@
     "goods": []
   },
   {
+    "id": "pg_8555",
+    "place": {
+      "name": "더현대 서울 6층",
+      "address": "서울 영등포구 여의대로 108",
+      "lat": 37.5256965228,
+      "lng": 126.9286895178,
+      "district": "yeouido",
+      "kind": "popup_venue"
+    },
+    "subject": "원위",
+    "title": "원위의 작업실",
+    "subject_type": "idol",
+    "kind": "popup",
+    "starts_on": "2026-08-20",
+    "ends_on": "2026-09-02",
+    "open_hours": "월-목 10:30 ~ 20:00 / 금-일 10:30 ~ 20:30",
+    "source_url": "https://www.instagram.com/p/DcDhDCbATCj/",
+    "listing_url": "https://popga.co.kr/popup/8555",
+    "image_url": "https://cdn.popga.co.kr/spot/8555/main/8ff7e1a5-4683-4f6a-be89-7c82ea29b027_1787064593158_thumbnail_MAIN_W480.webp",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
     "id": "pg_8417",
     "place": {
       "name": "더현대 서울 지하 1층 팝업 아이코닉",
@@ -212,6 +235,29 @@
     "goods": []
   },
   {
+    "id": "pg_8519",
+    "place": {
+      "name": "더 가베 성수",
+      "address": "서울 성동구 연무장13길 11",
+      "lat": 37.5428148021,
+      "lng": 127.0583718675,
+      "district": "seongsu",
+      "kind": "popup_venue"
+    },
+    "subject": "알파드라이브원",
+    "title": "알파드라이브원 팝업",
+    "subject_type": "idol",
+    "kind": "popup",
+    "starts_on": "2026-08-25",
+    "ends_on": "2026-09-06",
+    "open_hours": "매일 10:00 ~ 20:00",
+    "source_url": "https://x.com/ALD1_official/status/2087766095625421153",
+    "listing_url": "https://popga.co.kr/popup/8519",
+    "image_url": "https://cdn.popga.co.kr/spot/8519/main/551b46d4-a1eb-41f8-8bcf-b965c631702a_1786684563115_thumbnail_MAIN_W480.webp",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
     "id": "om_15165",
     "place": {
       "name": "오디너리 아카이브",
@@ -277,6 +323,29 @@
     "source_url": "https://x.com/kkukkus_CVS_24H",
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15051",
     "image_url": "https://img2.offmate.kr/birthday-cafe/0f810d07-29b1-40a6-bb57-5f6c25044359-1786128391341.jpeg",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "pg_8757",
+    "place": {
+      "name": "올리브영 두타점",
+      "address": "서울 중구 장충단로 275",
+      "lat": 37.5688849423,
+      "lng": 127.0087751142,
+      "district": "myeongdong",
+      "kind": "popup_venue"
+    },
+    "subject": "베리베리",
+    "title": "베리베리 팝업 - CONFETTI",
+    "subject_type": "idol",
+    "kind": "popup",
+    "starts_on": "2026-08-27",
+    "ends_on": "2026-09-17",
+    "open_hours": "매일 10:30 ~ 24:00",
+    "source_url": "https://x.com/MINIRECORD_SHOP/status/2092839527291535635",
+    "listing_url": "https://popga.co.kr/popup/8757",
+    "image_url": "https://cdn.popga.co.kr/spot/8757/main/844ba152-66cb-4162-bf23-9833deefd8ef_1787878799003_thumbnail_MAIN_W480.webp",
     "trust": "parsed",
     "goods": []
   },
@@ -622,6 +691,29 @@
     "source_url": "https://x.com/headliner_jk",
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15007",
     "image_url": "https://img2.offmate.kr/birthday-cafe/839626d3-6eeb-4427-9637-6ce66a5563d9-1785836592709.jpeg",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "pg_8721",
+    "place": {
+      "name": "코엑스",
+      "address": "서울 강남구 영동대로 513",
+      "lat": 37.5118239121,
+      "lng": 127.0591590438,
+      "district": "gangnam",
+      "kind": "popup_venue"
+    },
+    "subject": "에스에프나인",
+    "title": "SF9 팝업",
+    "subject_type": "idol",
+    "kind": "popup",
+    "starts_on": "2026-08-29",
+    "ends_on": "2026-09-01",
+    "open_hours": "매일 11:00 ~ 20:00",
+    "source_url": "https://x.com/Ktown4u_coex/status/2092814257486475527",
+    "listing_url": "https://popga.co.kr/popup/8721",
+    "image_url": "https://cdn.popga.co.kr/spot/8721/main/4bdbf3b1-a6a7-4f9e-acf8-67a92156a7ee_1787811270816_thumbnail_MAIN_W480.webp",
     "trust": "parsed",
     "goods": []
   },

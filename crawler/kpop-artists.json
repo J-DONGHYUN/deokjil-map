@@ -61,6 +61,10 @@
     { "name": "미야오", "aliases": ["MEOVV"] },
     { "name": "하츠투하츠", "aliases": ["Hearts2Hearts"] },
     { "name": "올데이프로젝트", "aliases": ["ALLDAY PROJECT"] },
-    { "name": "코르티스", "aliases": ["CORTIS"] }
+    { "name": "코르티스", "aliases": ["CORTIS"] },
+    { "name": "베리베리", "aliases": ["VERIVERY", "VERYVERY"] },
+    { "name": "SF9", "aliases": ["에스에프나인"] },
+    { "name": "원위", "aliases": ["ONEWE", "위브"] },
+    { "name": "알파드라이브원", "aliases": ["ALPHA DRIVE ONE", "ALPHADRIVEONE", "ALD1"] }
   ]
 }
