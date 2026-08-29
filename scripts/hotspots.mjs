@@ -132,6 +132,41 @@ const ringArea = (rings) =>
   }, 0))
 
 /**
+ * 라벨을 얹을 대표 좌표.
+ *
+ * 면적 중심(centroid)을 쓰되, 오목한 모양이면 중심이 영역 밖으로 떨어질 수 있다.
+ * 그때는 꼭짓점 평균으로 물러선다 — 라벨이 엉뚱한 동네에 찍히는 것보다 낫다.
+ */
+function centerOf(rings) {
+  const ring = rings.reduce((a, b) => (a.length >= b.length ? a : b), [])
+  let cx = 0
+  let cy = 0
+  let a2 = 0
+  for (let i = 0; i < ring.length; i++) {
+    const [x1, y1] = ring[i]
+    const [x2, y2] = ring[(i + 1) % ring.length]
+    const cross = x1 * y2 - x2 * y1
+    a2 += cross
+    cx += (x1 + x2) * cross
+    cy += (y1 + y2) * cross
+  }
+  if (a2 !== 0) {
+    const c = [cx / (3 * a2), cy / (3 * a2)]
+    if (rings.some((r) => inRing(c, r))) return c
+  }
+  const n = ring.length || 1
+  return [
+    ring.reduce((s, p) => s + p[0], 0) / n,
+    ring.reduce((s, p) => s + p[1], 0) / n,
+  ]
+}
+
+/** 좌표 소수 자리. 5자리면 약 1m 라 도시 구역을 그리는 데 넘친다 */
+const COORD_DIGITS = 5
+const round = (rings) =>
+  rings.map((r) => r.map((p) => [+p[0].toFixed(COORD_DIGITS), +p[1].toFixed(COORD_DIGITS)]))
+
+/**
  * 영역 밖 좌표를 위한 보정.
  * 121곳 폴리곤은 상권 핵심만 덮어 가장자리가 비어 있다 —
  * 용산 이벤트 21건이 전부 용산역 영역 밖으로 떨어졌는데 실제 거리는 250~340m 였다.
@@ -203,7 +238,15 @@ async function main() {
       continue
     }
     taken.add(pick[0])
-    map[district] = { code: pick[0], name: nameOf[pick[0]], category: catOf[pick[0]] ?? '' }
+    const shape = areas.find((a) => a.AREA_CD === pick[0])
+    map[district] = {
+      code: pick[0],
+      name: nameOf[pick[0]],
+      category: catOf[pick[0]] ?? '',
+      // 실시간 지도가 구역을 색으로 칠하는 데 쓴다. 9곳이라 20KB 남짓이다
+      center: centerOf(shape.rings),
+      rings: round(shape.rings),
+    }
     const share = ranked.map(([cd, n]) => `${nameOf[cd]} ${n}`).join(' · ')
     report.push([district, total, `${nameOf[pick[0]]} (${pick[1]}/${total})   [${share}]`])
   }
@@ -211,19 +254,26 @@ async function main() {
   console.log('\n구역        건수   대표 관측소')
   for (const [d, n, s] of report) console.log(`  ${d.padEnd(11)}${String(n).padStart(4)}   ${s}`)
 
-  writeFileSync(
-    OUT,
-    JSON.stringify(
-      {
-        source: '서울 열린데이터광장 OA-21778 · 주요 121장소 목록/영역',
-        note: 'scripts/hotspots.mjs 로 생성한다. 손으로 고치지 말 것',
-        districts: map,
-      },
-      null,
-      2,
-    ) + '\n',
+  // 좌표 배열만 한 줄로 눌러 쓴다. 들여쓰기를 그대로 두면 파일이 세 배가 되는데,
+  // 이 파일은 번들에 그대로 실려서 사용자가 내려받는 용량이 된다
+  const RINGS = '@@RINGS@@'
+  let out = JSON.stringify(
+    {
+      source: '서울 열린데이터광장 OA-21778 · 주요 121장소 목록/영역',
+      note: 'scripts/hotspots.mjs 로 생성한다. 손으로 고치지 말 것',
+      districts: Object.fromEntries(
+        Object.entries(map).map(([k, v]) => [k, { ...v, rings: `${RINGS}${k}` }]),
+      ),
+    },
+    null,
+    2,
   )
-  console.log(`\n저장: ${OUT} (${Object.keys(map).length}개 구역)`)
+  for (const [k, v] of Object.entries(map)) {
+    out = out.replace(`"${RINGS}${k}"`, JSON.stringify(v.rings))
+  }
+  writeFileSync(OUT, out + '\n')
+  const kb = Math.round(readFileSync(OUT).length / 1024)
+  console.log(`\n저장: ${OUT} (${Object.keys(map).length}개 구역 · ${kb}KB)`)
 }
 
 main().catch((e) => {

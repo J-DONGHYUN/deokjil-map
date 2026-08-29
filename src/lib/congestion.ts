@@ -73,9 +73,28 @@ export interface Hotspot {
   code: string
   name: string
   category: string
+  /** 라벨을 얹을 대표 좌표 [lng, lat] */
+  center: [number, number]
+  /** 구역 경계 (WGS84). 실시간 지도가 이 면을 혼잡도 색으로 칠한다 */
+  rings: [number, number][][]
 }
 
-const HOTSPOTS = hotspotData.districts as Record<string, Hotspot>
+/**
+ * 폴리곤 채움색.
+ *
+ * 카카오 Polygon 은 CSS 변수를 읽지 못해 값을 직접 넘겨야 한다.
+ * globals.css 의 --crowd-* 와 같은 값이므로 한쪽만 고치면 지도와 카드의 색이 어긋난다.
+ */
+export const CROWD_FILL: Record<CrowdLevel, string> = {
+  여유: '#1f7a4d',
+  보통: '#35688c',
+  '약간 붐빔': '#a8640f',
+  붐빔: '#9c3030',
+}
+
+// JSON 임포트는 좌표를 number[] 로 넓혀 읽는다. 실제 값은 [lng, lat] 쌍이므로
+// 튜플로 좁혀 쓴다 — 지도에 넘길 때 순서가 뒤집히면 서울이 아닌 곳이 찍힌다
+const HOTSPOTS = hotspotData.districts as unknown as Record<string, Hotspot>
 
 /** 관측소가 없는 구역이 있다. 'etc' 처럼 서로 먼 곳이 섞인 자루가 그렇다 */
 export function hotspotFor(district: District): Hotspot | null {

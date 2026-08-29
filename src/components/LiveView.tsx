@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { District, EventItem } from '@/types'
 import { DISTRICT_LABELS, filterEvents, groupByDistrict } from '@/lib/filters'
+import LiveMap, { type LiveRow } from './LiveMap'
 import {
   CROWD_SLUG,
   STALE_MINUTES,
@@ -32,6 +33,14 @@ const FAIL_TEXT: Record<string, string> = {
 
 type Loaded = Record<string, CongestionResult>
 
+/** 같은 값을 목록으로 볼지, 지도로 볼지 */
+type LiveMode = 'list' | 'map'
+
+const MODE_OPTIONS: { value: LiveMode; label: string }[] = [
+  { value: 'list', label: '목록' },
+  { value: 'map', label: '지도' },
+]
+
 /**
  * 실시간 혼잡도.
  *
@@ -41,6 +50,9 @@ type Loaded = Record<string, CongestionResult>
  * 우리 구역명만 쓰면 사용자가 "그 카페 앞이 붐빈다"로 읽는다.
  */
 export default function LiveView({ events, today, onDistrictMap }: Props) {
+  // 지도를 기본으로 둔다. 색으로 칠한 구역이 4단계 텍스트보다 먼저 읽히고,
+  // "지금 어디가 붐비나"는 원래 한눈에 보는 질문이다
+  const [mode, setMode] = useState<LiveMode>('map')
   const [data, setData] = useState<Loaded>({})
   const [loading, setLoading] = useState(true)
   const [tick, setTick] = useState(() => Date.now())
@@ -87,7 +99,12 @@ export default function LiveView({ events, today, onDistrictMap }: Props) {
     return () => clearInterval(id)
   }, [])
 
-  const rows = targets.map((t) => ({ ...t, result: data[t.district] }))
+  // 'N분 전' 갱신 타이머가 1분마다 재렌더를 일으킨다. 메모이즈하지 않으면
+  // 그때마다 새 배열이 만들어져 지도가 통째로 다시 그려지고 확대가 초기화된다
+  const rows = useMemo<LiveRow[]>(
+    () => targets.map((t) => ({ ...t, result: data[t.district] })),
+    [targets, data],
+  )
   const okCount = rows.filter((r) => r.result?.ok).length
   const needKey = rows.length > 0 && okCount === 0 &&
     rows.every((r) => r.result && !r.result.ok && r.result.reason === 'need-key')
@@ -103,6 +120,20 @@ export default function LiveView({ events, today, onDistrictMap }: Props) {
         <button type="button" className="livehead__refresh" onClick={load}>
           새로고침
         </button>
+      </div>
+
+      <div className="modetoggle" role="group" aria-label="보기 방식">
+        {MODE_OPTIONS.map((o) => (
+          <button
+            key={o.value}
+            type="button"
+            className={`modetoggle__item ${mode === o.value ? 'modetoggle__item--on' : ''}`}
+            aria-pressed={mode === o.value}
+            onClick={() => setMode(o.value)}
+          >
+            {o.label}
+          </button>
+        ))}
       </div>
 
       {/* 지금 보는 값이 무엇인지 한 번은 분명히 말한다 */}
@@ -125,6 +156,8 @@ export default function LiveView({ events, today, onDistrictMap }: Props) {
           <br />
           다른 날짜의 행사는 홈에서 볼 수 있어요.
         </p>
+      ) : mode === 'map' ? (
+        <LiveMap rows={rows} onDistrictMap={onDistrictMap} />
       ) : (
         <div className="rows">
           {rows.map(({ district, count, result }) => {

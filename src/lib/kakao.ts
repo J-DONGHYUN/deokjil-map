@@ -39,6 +39,11 @@ export interface KakaoCustomOverlay {
   setZIndex(z: number): void
 }
 
+export interface KakaoPolygon {
+  setMap(map: KakaoMap | null): void
+  setOptions(options: { fillColor?: string; fillOpacity?: number; strokeColor?: string }): void
+}
+
 export interface KakaoBounds {
   extend(latlng: KakaoLatLng): void
   isEmpty(): boolean
@@ -70,6 +75,17 @@ export interface KakaoNamespace {
       title?: string
       image?: unknown
     }) => KakaoMarker
+    /** 구역을 색으로 칠한다. 혼잡도는 점이 아니라 면이라 마커로는 표현되지 않는다 */
+    Polygon: new (options: {
+      path: KakaoLatLng[] | KakaoLatLng[][]
+      strokeWeight?: number
+      strokeColor?: string
+      strokeOpacity?: number
+      strokeStyle?: string
+      fillColor?: string
+      fillOpacity?: number
+      map?: KakaoMap
+    }) => KakaoPolygon
     /** 임의 HTML을 좌표에 얹는다. 기본 마커로는 "무슨 행사인지"를 표시할 수 없다 */
     CustomOverlay: new (options: {
       position: KakaoLatLng
