@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { EventItem } from '@/types'
 import {
   DISTRICT_LABELS,
+  EVENT_KIND_LABELS,
   filterEvents,
   groupByDistrict,
   periodLabel,
@@ -15,6 +16,7 @@ import {
   distanceKm,
   formatDistance,
   loadKakaoMaps,
+  type KakaoCustomOverlay,
   type LoadState,
 } from '@/lib/kakao'
 import Chips, { type ChipOption } from './Chips'
@@ -76,6 +78,7 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
   useEffect(() => {
     if (!KAKAO_JS_KEY) return
     let cancelled = false
+    const overlays: KakaoCustomOverlay[] = []
 
     loadKakaoMaps()
       .then((kakao) => {
@@ -104,7 +107,7 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
           el.querySelector('.pin__name')!.textContent = ev.subject
           el.onclick = () => setSelected(ev.id)
 
-          new kakao.maps.CustomOverlay({
+          const overlay = new kakao.maps.CustomOverlay({
             position: pos,
             content: el,
             map,
@@ -113,6 +116,7 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
             zIndex: 100 + i,
             clickable: true,
           })
+          overlays.push(overlay)
 
           bounds.extend(pos)
         }
@@ -157,6 +161,12 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
 
     return () => {
       cancelled = true
+      // 카카오 Map 에는 destroy 가 없다. 컨테이너를 비우지 않으면 필터를 바꿀 때마다
+      // 지도가 겹쳐 쌓이고 옛 핀이 그대로 남는다. 그 핀을 누르면 지금 목록에 없는
+      // id 가 선택돼 미니 카드가 뜨지 않는다 — 클릭이 먹통으로 보이는 원인이었다
+      for (const o of overlays) o.setMap(null)
+      overlays.length = 0
+      if (containerRef.current) containerRef.current.innerHTML = ''
     }
   }, [pins])
 
@@ -216,7 +226,7 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
         </p>
 
         {selectedEvent && (
-          <div className="mapsheet">
+          <div className="mapsheet" role="dialog" aria-label={`${selectedEvent.subject} 요약`}>
             <button
               type="button"
               className="mapsheet__close"
@@ -225,17 +235,55 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
             >
               ✕
             </button>
-            <button
-              type="button"
-              className="mapsheet__body"
-              onClick={() => onOpen(selectedEvent.id)}
-            >
-              <strong>{selectedEvent.subject}</strong>
-              <span className="mapsheet__place">
-                {DISTRICT_LABELS[selectedEvent.place.district]} · {selectedEvent.place.name}
-              </span>
-              <span className="mapsheet__period">{periodLabel(selectedEvent, today)}</span>
-            </button>
+
+            {/* 지도를 벗어나지 않고 "여기가 어디고 언제 여는지"에 답하는 것이 목적이다.
+                상세로 넘어가면 지도에서 보던 위치 맥락이 끊긴다 */}
+            <div className="mapsheet__scroll">
+              <p className="mapsheet__head">
+                <span className={`mapsheet__kind mapsheet__kind--${selectedEvent.kind}`}>
+                  {EVENT_KIND_LABELS[selectedEvent.kind]}
+                </span>
+                <strong className="mapsheet__subject">{selectedEvent.subject}</strong>
+                <span className="mapsheet__period">{periodLabel(selectedEvent, today)}</span>
+              </p>
+
+              <p className="mapsheet__place">
+                <span className="card__district">
+                  {DISTRICT_LABELS[selectedEvent.place.district]}
+                </span>
+                {selectedEvent.place.name}
+              </p>
+              <p className="mapsheet__address">{selectedEvent.place.address}</p>
+
+              <dl className="mapsheet__rows">
+                <div className="mapsheet__row">
+                  <dt>기간</dt>
+                  <dd>
+                    {selectedEvent.starts_on} ~ {selectedEvent.ends_on}
+                  </dd>
+                </div>
+                {selectedEvent.open_hours && (
+                  <div className="mapsheet__row">
+                    <dt>운영시간</dt>
+                    <dd>{selectedEvent.open_hours}</dd>
+                  </div>
+                )}
+                {selectedEvent.perks && (
+                  <div className="mapsheet__row">
+                    <dt>특전</dt>
+                    <dd>{selectedEvent.perks}</dd>
+                  </div>
+                )}
+              </dl>
+
+              <button
+                type="button"
+                className="mapsheet__more"
+                onClick={() => onOpen(selectedEvent.id)}
+              >
+                자세히 보기
+              </button>
+            </div>
           </div>
         )}
       </div>

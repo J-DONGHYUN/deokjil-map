@@ -644,8 +644,13 @@ a { color: inherit; }
   min-height: 300px;
 }
 
+/* z-index 를 명시해 쌓임 맥락(stacking context)을 만든다.
+   카카오 CustomOverlay 는 zIndex 100+ 로 붙는데, 여기가 z-index: auto 면
+   그 값이 이 상자 밖까지 올라와 아래의 배지·미니 카드를 덮어버린다.
+   실제로 핀을 눌러도 카드가 안 보이던 원인이 이것이었다. */
 .mapcanvas {
   position: absolute;
+  z-index: 0;
   inset: 0;
   background: var(--bg-sunk);
 }
@@ -661,6 +666,7 @@ a { color: inherit; }
 
 .mapwrap__count {
   position: absolute;
+  z-index: 1;
   top: 10px;
   left: var(--gutter);
   padding: 5px 11px;
@@ -673,38 +679,99 @@ a { color: inherit; }
   box-shadow: var(--shadow-card);
 }
 
-/* 핀을 눌렀을 때 뜨는 미니 카드 */
+/* 핀을 눌렀을 때 뜨는 미니 카드.
+   장소·기간·시간·특전까지 담는다 — 지도에서 다음 목적지를 고르는 데
+   필요한 것이 그것이고, 상세로 넘기면 위치 맥락이 끊긴다. */
 .mapsheet {
   position: absolute;
+  z-index: 2;
   left: var(--gutter);
   right: var(--gutter);
   bottom: 14px;
+  max-height: 62%;
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 12px 14px;
+  flex-direction: column;
+  padding: 13px 14px;
   border-radius: var(--radius);
   background: var(--surface);
   border: 1px solid var(--border-mid);
   box-shadow: 0 4px 20px rgba(120, 60, 85, 0.16);
 }
-.mapsheet__body {
-  flex: 1;
-  min-width: 0;
+
+/* 내용만 스크롤시킨다. 카드 전체를 스크롤하면 닫기 버튼이 위로 밀려 사라진다 */
+.mapsheet__scroll {
+  min-height: 0;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  border: 0;
-  background: none;
-  text-align: left;
-  cursor: pointer;
-  padding: 0;
+  gap: 5px;
+  padding-right: 26px;
 }
-.mapsheet__body strong { font-size: 16px; font-weight: 700; }
-.mapsheet__place { font-size: 13.5px; color: var(--text-dim); }
-.mapsheet__period { font-size: 12.5px; color: var(--accent-ink); font-weight: 600; }
-.mapsheet__close {
+
+.mapsheet__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mapsheet__kind {
   flex: 0 0 auto;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+/* 핀 색과 맞춘다 — 방금 누른 그 핀이라는 걸 잇는다 */
+.mapsheet__kind--birthday_cafe { background: #4a4fb5; }
+.mapsheet__subject {
+  font-size: 16px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mapsheet__period {
+  flex: 0 0 auto;
+  margin-left: auto;
+  font-size: 12.5px;
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+
+.mapsheet__place { font-size: 13.5px; font-weight: 600; }
+.mapsheet__address { font-size: 12.5px; color: var(--text-dim); }
+
+.mapsheet__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 3px;
+}
+.mapsheet__row { display: flex; gap: 8px; font-size: 12.5px; line-height: 1.45; }
+.mapsheet__row dt { flex: 0 0 52px; color: var(--text-dim); font-weight: 600; }
+/* 특전은 줄바꿈이 들어 있다. 원문의 줄 구분을 살린다 */
+.mapsheet__row dd { flex: 1; min-width: 0; white-space: pre-line; }
+
+.mapsheet__more {
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 7px 13px;
+  border: 1px solid var(--border-mid);
+  border-radius: 999px;
+  background: var(--bg-sunk);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.mapsheet__close {
+  position: absolute;
+  z-index: 1;
+  top: 9px;
+  right: 9px;
   width: 28px;
   height: 28px;
   border: 0;

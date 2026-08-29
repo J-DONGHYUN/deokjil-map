@@ -34,7 +34,7 @@ interface KakaoMarker {
   setMap(map: KakaoMap | null): void
 }
 
-interface KakaoCustomOverlay {
+export interface KakaoCustomOverlay {
   setMap(map: KakaoMap | null): void
   setZIndex(z: number): void
 }
