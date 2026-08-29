@@ -958,6 +958,92 @@ a { color: inherit; }
 }
 .pin--cluster .pin__kind { font-size: 11px; }
 
+/* ── 지도 검색 ────────────────────────────────────────────
+   안 걸린 핀을 지우지 않는다. 검색은 "이 대상이 어디쯤인가"를 묻는
+   것이고, 그 답에는 주변에 뭐가 같이 있는지가 포함된다.
+   대신 걸린 쪽은 테 색을 그대로 채워 흰 핀들 사이에서 튀게 한다.
+
+   이 규칙들은 .pin--birthday_cafe 뒤에 와야 한다 — 특이도가 같아
+   순서가 곧 우선순위다.
+   ------------------------------------------------------- */
+.pin--dim {
+  opacity: 0.45;
+  border-color: var(--border-mid);
+  filter: saturate(0.2);
+}
+.pin--dim .pin__kind { background: var(--gone); }
+.pin--dim .pin__tail { border-top-color: var(--border-mid); }
+
+.pin--hit {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: scale(1.05);
+  box-shadow:
+    0 0 0 3px var(--surface),
+    0 4px 14px rgba(233, 51, 121, 0.42);
+}
+.pin--hit .pin__name { color: #fff; }
+.pin--hit .pin__kind { background: rgba(255, 255, 255, 0.92); color: var(--accent-ink); }
+.pin--hit .pin__tail { border-top-color: var(--accent); }
+
+.pin--birthday_cafe.pin--hit {
+  background: #4a4fb5;
+  border-color: #4a4fb5;
+  box-shadow:
+    0 0 0 3px var(--surface),
+    0 4px 14px rgba(74, 79, 181, 0.42);
+}
+.pin--birthday_cafe.pin--hit .pin__kind { color: #3a3f9b; }
+.pin--birthday_cafe.pin--hit .pin__tail { border-top-color: #4a4fb5; }
+
+.pin--mixed.pin--hit { background: var(--text-dim); border-color: var(--text-dim); }
+.pin--mixed.pin--hit .pin__kind { color: var(--text); }
+.pin--mixed.pin--hit .pin__tail { border-top-color: var(--text-dim); }
+
+/* 검색 중임을 남기는 띠. 지도를 옮겨 놓고 사라지면
+   왜 이 화면인지, 어떻게 되돌리는지 알 수 없다 */
+.mapsearch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 2px var(--gutter) 0;
+  padding: 7px 10px 7px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.mapsearch__q { font-size: 14px; font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mapsearch__n { font-size: 13px; font-weight: 600; opacity: 0.8; flex: 0 0 auto; }
+.mapsearch__clear {
+  margin-left: auto;
+  flex: 0 0 auto;
+  min-height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--accent-ink);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* 검색 결과에서 지도로 넘어가는 주요 동선 */
+.overlay__tomap {
+  display: block;
+  width: calc(100% - var(--gutter) * 2);
+  margin: 0 var(--gutter) 10px;
+  min-height: 46px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 /* ── 날짜 네비게이터 ──────────────────────────────────────
    칩(오늘/주말/전체)으로는 "모레 뭐 열려?"에 답할 수 없었다.
    하루씩 옮기는 편이 팬덤의 실제 질문에 맞는다.

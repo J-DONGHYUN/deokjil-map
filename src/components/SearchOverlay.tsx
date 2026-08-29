@@ -10,6 +10,11 @@ interface Props {
   today: string
   onClose: () => void
   onOpen: (id: string) => void
+  /**
+   * 지도 탭에서만 넘어온다. 있으면 결과를 여는 대신 지도에 질의를 건다 —
+   * 지도에서 검색하는 사람은 한 곳을 열려는 게 아니라 "어디쯤인지"를 보려는 것이다.
+   */
+  onQuery?: (query: string) => void
 }
 
 /**
@@ -19,7 +24,7 @@ interface Props {
  * 질의는 이 컴포넌트의 지역 상태다. 목록 탭의 필터와 공유하지 않는다 —
  * 검색하고 닫았는데 목록 탭에 질의가 남아 있으면 그게 더 헷갈린다.
  */
-export default function SearchOverlay({ events, today, onClose, onOpen }: Props) {
+export default function SearchOverlay({ events, today, onClose, onOpen, onQuery }: Props) {
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -51,7 +56,14 @@ export default function SearchOverlay({ events, today, onClose, onOpen }: Props)
 
   return (
     <div className="overlay" role="dialog" aria-modal="true" aria-label="검색">
-      <div className="overlay__bar">
+      <form
+        className="overlay__bar"
+        onSubmit={(e) => {
+          e.preventDefault()
+          // 지도 모드에서는 목록을 고르지 않고 엔터만 쳐도 바로 지도에 걸린다
+          if (onQuery && typed) onQuery(query.trim())
+        }}
+      >
         <input
           ref={inputRef}
           className="overlay__input"
@@ -64,7 +76,7 @@ export default function SearchOverlay({ events, today, onClose, onOpen }: Props)
         <button type="button" className="overlay__close" onClick={onClose}>
           취소
         </button>
-      </div>
+      </form>
 
       <div className="overlay__body">
         {!typed ? (
@@ -82,10 +94,31 @@ export default function SearchOverlay({ events, today, onClose, onOpen }: Props)
         ) : (
           <>
             <p className="count">{results.length}건</p>
+            {onQuery && (
+              <button
+                type="button"
+                className="overlay__tomap"
+                onClick={() => onQuery(query.trim())}
+              >
+                지도에서 ‘{query.trim()}’ {results.length}곳 보기 →
+              </button>
+            )}
             <div className="rows">
-              {results.map((ev) => (
-                <EventCard key={ev.id} event={ev} today={today} variant="row" onOpen={onOpen} />
-              ))}
+              {results.map((ev) =>
+                onQuery ? (
+                  // 지도 모드에서는 카드를 눌러도 상세로 가지 않는다.
+                  // 그 대상만 지도에 걸어 주변과 함께 보여준다
+                  <EventCard
+                    key={ev.id}
+                    event={ev}
+                    today={today}
+                    variant="row"
+                    onOpen={() => onQuery(ev.subject)}
+                  />
+                ) : (
+                  <EventCard key={ev.id} event={ev} today={today} variant="row" onOpen={onOpen} />
+                ),
+              )}
             </div>
           </>
         )}

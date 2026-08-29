@@ -8,6 +8,7 @@ import {
   countsByDate,
   filterEvents,
   groupByDistrict,
+  matchesQuery,
   periodLabel,
   shiftDate,
   type DistrictFilter,
@@ -162,6 +163,19 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
     [dayEvents, filter.district],
   )
 
+  /**
+   * 검색에 걸린 것들.
+   *
+   * 지도에서는 안 걸린 핀을 지우지 않는다 — 검색은 "이 대상이 어디쯤인가"를
+   * 묻는 것이고, 그 답에는 주변에 뭐가 같이 있는지가 포함된다.
+   * 대신 색을 갈라 걸린 쪽만 도드라지게 한다.
+   */
+  const hitIds = useMemo(() => {
+    const q = filter.query.trim()
+    if (!q) return null
+    return new Set(pins.filter((e) => matchesQuery(e, q)).map((e) => e.id))
+  }, [pins, filter.query])
+
   const clusters = useMemo(() => clusterPins(pins, scale?.kmPerPx ?? null), [pins, scale])
 
   /** 화면이 담고 있는 범위와 축척을 읽는다 */
@@ -233,15 +247,21 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
     // 기본 마커는 전부 똑같이 생겨서 눌러보기 전엔 무슨 행사인지 알 수 없다.
     // 대상명과 유형을 얹은 라벨 핀을 직접 그린다
     for (const [i, c] of clusters.entries()) {
-      const head = c.items[0]
+      // 검색 중이면 걸린 항목을 대표로 세운다. 묶음 안에 찾던 대상이 있는데
+      // 라벨에 다른 이름이 떠 있으면 왜 강조됐는지 알 수 없다
+      const head = (hitIds && c.items.find((e) => hitIds.has(e.id))) || c.items[0]
       const count = c.items.length
       const kinds = new Set(c.items.map((e) => e.kind))
       // 생카와 팝업이 섞인 묶음은 어느 한쪽 색을 쓰면 거짓말이 된다
       const kindClass = kinds.size === 1 ? `pin--${head.kind}` : 'pin--mixed'
 
+      // 검색 중이면 걸린 묶음만 색을 살리고 나머지는 뒤로 물린다
+      const hit = hitIds ? c.items.some((e) => hitIds.has(e.id)) : false
+      const searchClass = !hitIds ? '' : hit ? ' pin--hit' : ' pin--dim'
+
       const el = document.createElement('button')
       el.type = 'button'
-      el.className = `pin ${kindClass}${count > 1 ? ' pin--cluster' : ''}`
+      el.className = `pin ${kindClass}${count > 1 ? ' pin--cluster' : ''}${searchClass}`
       el.innerHTML =
         '<span class="pin__kind"></span><span class="pin__name"></span><span class="pin__tail"></span>'
       el.querySelector('.pin__kind')!.textContent =
@@ -267,7 +287,8 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
           map,
           yAnchor: 1,
           // 위쪽 핀이 아래쪽 핀 라벨을 가리지 않도록 위도 순으로 겹침 순서를 준다
-          zIndex: 100 + i,
+          // 걸린 핀은 위로 올려 다른 라벨에 가리지 않게 한다
+          zIndex: (hit ? 1000 : 100) + i,
           clickable: true,
         }),
       )
@@ -276,7 +297,7 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
     return () => {
       for (const o of overlays) o.setMap(null)
     }
-  }, [clusters, state])
+  }, [clusters, state, hitIds])
 
   // ③ 화면 맞추기 — 목록이 바뀔 때만.
   // 확대할 때마다 다시 맞추면 사용자가 확대를 할 수 없다
@@ -285,17 +306,23 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
     const kakao = kakaoRef.current
     if (!map || !kakao || pins.length === 0) return
 
-    // 핀이 하나뿐이면 bounds 가 한 점이라 과하게 확대된다
-    if (pins.length === 1) {
-      map.setCenter(new kakao.maps.LatLng(pins[0].place.lat, pins[0].place.lng))
-      map.setLevel(4)
+    // 검색 중이면 걸린 것들에 맞춘다. 전체에 맞추면 찾던 대상이
+    // 서울 전경 어딘가의 점 하나로 남아 검색한 보람이 없다
+    const target = hitIds ? pins.filter((e) => hitIds.has(e.id)) : pins
+    if (target.length === 0) return
+
+    // 한 곳뿐이면 bounds 가 한 점이라 과하게 확대된다.
+    // 검색 결과가 하나일 때 주변이 같이 보여야 "어디쯤인지"가 읽힌다
+    if (target.length === 1) {
+      map.setCenter(new kakao.maps.LatLng(target[0].place.lat, target[0].place.lng))
+      map.setLevel(hitIds ? 5 : 4)
       return
     }
 
     const bounds = new kakao.maps.LatLngBounds()
-    for (const e of pins) bounds.extend(new kakao.maps.LatLng(e.place.lat, e.place.lng))
+    for (const e of target) bounds.extend(new kakao.maps.LatLng(e.place.lat, e.place.lng))
     if (!bounds.isEmpty()) map.setBounds(bounds)
-  }, [pins, state])
+  }, [pins, state, hitIds])
 
   // 필터가 바뀌면 사라진 핀의 미니 카드가 남지 않도록 한다
   const byId = useMemo(() => new Map(pins.map((e) => [e.id, e])), [pins])
@@ -346,6 +373,24 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
         value={filter.district}
         onChange={(v) => onFilter('district', v)}
       />
+
+      {/* 검색은 지도를 옮겨 놓고 사라지면 안 된다. 왜 이 화면인지,
+          어떻게 되돌리는지를 남겨 둔다 */}
+      {hitIds && (
+        <div className="mapsearch">
+          <span className="mapsearch__q">‘{filter.query.trim()}’</span>
+          <span className="mapsearch__n">
+            {hitIds.size > 0 ? `${hitIds.size}곳` : '결과 없음'}
+          </span>
+          <button
+            type="button"
+            className="mapsearch__clear"
+            onClick={() => onFilter('query', '')}
+          >
+            해제
+          </button>
+        </div>
+      )}
     </div>
   )
 

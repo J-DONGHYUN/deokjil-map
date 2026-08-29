@@ -95,14 +95,18 @@ export default function Page() {
             <h1 className="header__title">모여라덕</h1>
             <p className="header__sub">오늘 서울 어디서 뭐 하지?</p>
           </div>
-          <button
-            type="button"
-            className="header__search"
-            aria-label="검색"
-            onClick={() => setSearchOpen(true)}
-          >
-            검색
-          </button>
+          {/* 목록 탭에는 자체 검색창이 있다. 여기까지 두면 같은 일을 하는
+              입구가 둘이 되고, 어느 쪽이 목록에 반영되는지 헷갈린다 */}
+          {tab !== 'list' && (
+            <button
+              type="button"
+              className="header__search"
+              aria-label="검색"
+              onClick={() => setSearchOpen(true)}
+            >
+              검색
+            </button>
+          )}
         </div>
       </header>
 
@@ -177,6 +181,15 @@ export default function Page() {
             setSearchOpen(false)
             openDetail(id)
           }}
+          // 지도 탭에서만 질의를 건다. 홈에서는 예전처럼 상세로 바로 간다
+          {...(tab === 'map'
+            ? {
+                onQuery: (q: string) => {
+                  setField('query', q)
+                  setSearchOpen(false)
+                },
+              }
+            : {})}
         />
       )}
     </div>
