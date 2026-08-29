@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import type { EventItem } from '@/types'
 import { DISTRICT_LABELS, EVENT_KIND_LABELS, daysLeft, periodLabel } from '@/lib/filters'
 import { initialFor, swatchFor } from '@/lib/visual'
+import DetailMap from './DetailMap'
 
 interface Props {
   event: EventItem
@@ -115,6 +116,10 @@ export default function EventDetail({ event, today, onClose, onOpenSource }: Pro
             </ul>
           </section>
         )}
+
+        {/* 위치는 사실 정보라 원문 링크(행동)보다 앞에 둔다.
+            "어디인지" 를 보고 나서 "원문을 확인할지" 를 정한다 */}
+        <DetailMap event={event} />
 
         {/* 원문 링크는 필수 노출이다 (poc-plan 1번 정합성 교란 방어).
             주최자·운영사의 공식 게시물일 때만 주요 동선으로 올린다 */}

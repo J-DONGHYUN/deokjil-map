@@ -39,19 +39,29 @@ export interface KakaoCustomOverlay {
   setZIndex(z: number): void
 }
 
-interface KakaoBounds {
+export interface KakaoBounds {
   extend(latlng: KakaoLatLng): void
   isEmpty(): boolean
   getSouthWest(): KakaoLatLng
   getNorthEast(): KakaoLatLng
 }
 
-interface KakaoNamespace {
+export interface KakaoNamespace {
   maps: {
     load(cb: () => void): void
     LatLng: new (lat: number, lng: number) => KakaoLatLng
     LatLngBounds: new () => KakaoBounds
-    Map: new (container: HTMLElement, options: { center: KakaoLatLng; level: number }) => KakaoMap & {
+    Map: new (
+      container: HTMLElement,
+      options: {
+        center: KakaoLatLng
+        level: number
+        // 상세 화면의 위치 지도는 스크롤 안에 들어간다. 켜 두면 모바일에서
+        // 지도가 스크롤을 먹어 시트를 내릴 수 없다 — 그래서 끌 수 있어야 한다
+        draggable?: boolean
+        zoomable?: boolean
+      },
+    ) => KakaoMap & {
       setBounds(bounds: KakaoBounds): void
     }
     Marker: new (options: {
@@ -84,6 +94,9 @@ export const KAKAO_JS_KEY = process.env.NEXT_PUBLIC_KAKAO_JS_KEY ?? ''
 export type LoadState = 'idle' | 'loading' | 'ready' | 'no-key' | 'error'
 
 let loadPromise: Promise<KakaoNamespace> | null = null
+
+/** 생성된 지도 인스턴스. ref 에 담아 두고 오버레이만 다시 그린다 */
+export type KakaoMapInstance = KakaoMap & { setBounds(bounds: KakaoBounds): void }
 
 export function loadKakaoMaps(): Promise<KakaoNamespace> {
   if (!KAKAO_JS_KEY) return Promise.reject(new Error('no-key'))
