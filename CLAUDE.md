@@ -102,3 +102,13 @@ node crawler/to-events.mjs                    # 정규화 → src/data/events.js
 
 단계가 끝나면 **커밋과 푸시를 같이** 한다. 커밋 메시지에는 무엇을 했는지보다
 **왜 그렇게 했는지**를 남긴다 — 다음에 같은 결정을 다시 논쟁하지 않기 위해서다.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

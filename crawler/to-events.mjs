@@ -258,7 +258,22 @@ const cafeEvents = offmateRecords
   .filter((r) => r.endDate >= today)
   .map(offmateToEvent)
 
-const events = [...rows.map(({ rec, artist }) => toEvent(rec, artist)), ...cafeEvents]
+const all = [...rows.map(({ rec, artist }) => toEvent(rec, artist)), ...cafeEvents]
+
+/**
+ * 원문을 못 찾은 것은 싣지 않는다.
+ *
+ * 두 소스 모두 주최자 계정이 없으면 `source_url` 이 리스팅 주소로 떨어진다.
+ * 그대로 두면 화면의 "공식 공지 보기" 가 경쟁 리스팅으로 연결된다 — 출처를
+ * 속이는 것이고, 앱에 원문 링크를 반드시 노출한다는 규칙도 깨진다.
+ *
+ * 빼는 쪽을 고른 이유: 링크 없이 정보만 실으면 사용자가 확인할 방법이 없다.
+ * 커버리지가 조금 줄더라도 실린 것은 전부 원문으로 이어지는 편이 낫다.
+ */
+const isListing = (url) => !url || /popga\.co\.kr|offmate/.test(url)
+const events = all.filter((e) => !isListing(e.source_url))
+const dropped = all.length - events.length
+
 events.sort((a, b) => (a.starts_on < b.starts_on ? -1 : 1))
 
 mkdirSync(dirname(OUT), { recursive: true })
@@ -267,10 +282,14 @@ writeFileSync(OUT, JSON.stringify(events, null, 2) + '\n', 'utf8')
 const byDistrict = {}
 for (const e of events) byDistrict[e.place.district] = (byDistrict[e.place.district] ?? 0) + 1
 
+const popupCount = events.filter((e) => e.kind === 'popup').length
+
 console.log(
   `팝가 ${popgaRecords.length} + 오프메이트 ${offmateRecords.length} → ` +
     `서울·진행중${KEEP_ALL ? '' : '·K-pop'} ${events.length}건 ` +
-    `(팝업 ${events.length - cafeEvents.length} · 생카 ${cafeEvents.length})`,
+    `(팝업 ${popupCount} · 생카 ${events.length - popupCount})`,
 )
+// 조용히 줄어들면 수집이 깨진 것과 구분되지 않는다. 항상 드러낸다
+if (dropped) console.log(`원문 없어 제외: ${dropped}건`)
 console.log('구역별:', byDistrict)
 console.log(`저장: ${OUT}`)
