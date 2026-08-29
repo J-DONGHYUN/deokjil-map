@@ -969,6 +969,110 @@ a { color: inherit; }
   padding: 2px var(--gutter);
 }
 
+/* 달력 팝오버의 기준. 가운데 버튼을 감싸 그 아래에 붙인다 */
+.datenav__center { position: relative; flex: 1; min-width: 0; display: flex; }
+
+.datenav__caret {
+  flex: 0 0 auto;
+  font-size: 11px;
+  color: var(--text-mute);
+  transition: transform 0.12s;
+}
+.datenav__caret--up { transform: rotate(180deg); }
+
+/* ── 날짜 선택 달력 ──────────────────────────────────────
+   화살표만으로는 먼 날짜가 멀다. 한 달을 펼쳐 짚게 한다.
+   날짜 옆의 숫자는 그날 열려 있는 곳의 수 — 없으면 어느 날이
+   볼 만한지 눌러보기 전에는 알 수 없다.
+   ------------------------------------------------------- */
+.cal {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  padding: 12px;
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 8px 28px rgba(120, 60, 85, 0.18);
+}
+
+.cal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.cal__month { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+
+.cal__nav {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-dim);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.cal__nav:disabled { opacity: 0.32; cursor: default; }
+
+.cal__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+
+.cal__grid--head { margin-bottom: 2px; }
+.cal__wd {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-mute);
+  padding: 2px 0;
+}
+.cal__wd--sun { color: var(--accent-ink); }
+
+.cal__blank { aspect-ratio: 1 / 1; }
+
+.cal__day {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: none;
+  cursor: pointer;
+  padding: 0;
+}
+.cal__day:hover:not(:disabled) { background: var(--bg-sunk); }
+.cal__day:disabled { opacity: 0.28; cursor: default; }
+
+.cal__n { font-size: 14px; font-weight: 600; line-height: 1.1; }
+
+/* 건수는 날짜보다 작게. 날짜를 읽는 눈을 방해하면 안 된다 */
+.cal__count {
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--accent-ink);
+  min-height: 12px;
+}
+
+/* 행사가 없는 날은 흐리게. 지우지는 않는다 — 날짜 격자가 끊기면 세기 어렵다 */
+.cal__day--empty .cal__n { color: var(--text-mute); font-weight: 500; }
+
+.cal__day--today { border-color: var(--border-mid); }
+
+.cal__day--on {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.cal__day--on .cal__n { color: var(--accent-ink); font-weight: 800; }
+
 .datenav__arrow {
   flex: 0 0 auto;
   width: var(--tap);

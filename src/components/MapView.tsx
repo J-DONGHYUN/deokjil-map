@@ -5,9 +5,11 @@ import type { EventItem } from '@/types'
 import {
   DISTRICT_LABELS,
   EVENT_KIND_LABELS,
+  countsByDate,
   filterEvents,
   groupByDistrict,
   periodLabel,
+  shiftDate,
   type DistrictFilter,
   type FilterState,
 } from '@/lib/filters'
@@ -318,9 +320,26 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
     setSheet(null)
   }, [])
 
+  // 달력용 건수. 날짜 조건만 빼고 지금 필터를 그대로 쓴다
+  const dateCounts = useMemo(
+    () =>
+      countsByDate(
+        events,
+        { date: 'all', kind: filter.kind, district: filter.district, query: '' },
+        today,
+        shiftDate(today, 60, today),
+      ),
+    [events, filter.kind, filter.district, today],
+  )
+
   const controls = (
     <div className="filterbar mapcontrols">
-      <DateNav value={filter.date} today={today} onChange={(v) => onFilter('date', v)} />
+      <DateNav
+        value={filter.date}
+        today={today}
+        onChange={(v) => onFilter('date', v)}
+        counts={dateCounts}
+      />
       <Chips
         label="지역"
         options={districtOptions}

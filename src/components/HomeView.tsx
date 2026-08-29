@@ -4,8 +4,10 @@ import { useMemo } from 'react'
 import type { EventItem } from '@/types'
 import {
   DISTRICT_LABELS,
+  countsByDate,
   filterEvents,
   groupByDistrict,
+  shiftDate,
   type DateFilter,
   type DistrictFilter,
   type FilterState,
@@ -90,10 +92,17 @@ export default function HomeView({
     [allGroups],
   )
 
+  // 달력에 찍을 건수. 날짜만 빼고 지금 걸린 필터를 그대로 반영한다 —
+  // 홍대만 보는 중에 서울 전체 건수를 보여주면 눌러 놓고 빈 화면을 만난다
+  const dateCounts = useMemo(
+    () => countsByDate(events, { date: 'all', kind, district, query: '' }, today, shiftDate(today, 60, today)),
+    [events, kind, district, today],
+  )
+
   return (
     <>
       <div className="filterbar">
-        <DateNav value={date} today={today} onChange={onDate} />
+        <DateNav value={date} today={today} onChange={onDate} counts={dateCounts} />
         <Chips label="지역" options={districtOptions} value={district} onChange={onDistrict} />
         <Chips label="유형" options={KIND_OPTIONS} value={kind} onChange={onKind} />
       </div>
