@@ -162,6 +162,56 @@ export function dateLabel(date: DateKey): string {
   return `${m}월 ${d}일 (${WEEKDAYS[dayOfWeek(date)]})`
 }
 
+export const WEEKDAY_LABELS = WEEKDAYS
+
+/** 'YYYY-MM' 한 달의 날짜 격자. 앞뒤를 null 로 메워 7칸에 맞춘다 */
+export function monthGrid(year: number, month: number): (DateKey | null)[] {
+  const first = new Date(year, month - 1, 1, 12)
+  const daysInMonth = new Date(year, month, 0, 12).getDate()
+  const cells: (DateKey | null)[] = Array(first.getDay()).fill(null)
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    cells.push(`${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`)
+  }
+  // 마지막 줄만 채운다. 뒤를 통째로 메우면 빈 줄이 하나 더 생기는 달이 있다
+  while (cells.length % 7 !== 0) cells.push(null)
+  return cells
+}
+
+/**
+ * 날짜별 행사 수.
+ *
+ * 달력에 "이날 몇 곳"을 찍기 위한 것이라, 날짜 조건만 빼고 나머지 필터
+ * (지역·유형·검색어)는 그대로 적용한다 — 홍대만 보고 있는데 서울 전체
+ * 건수를 보여주면 눌러 놓고 빈 화면을 만나게 된다.
+ *
+ * 행사는 기간을 가지므로 하루가 아니라 걸치는 모든 날에 더한다.
+ */
+export function countsByDate(
+  events: EventItem[],
+  filter: FilterState,
+  from: DateKey,
+  to: DateKey,
+): Record<DateKey, number> {
+  const counts: Record<DateKey, number> = {}
+
+  for (const ev of events) {
+    if (filter.district !== 'all' && ev.place.district !== filter.district) continue
+    if (filter.kind !== 'all' && ev.kind !== filter.kind) continue
+    if (!matchesQuery(ev, filter.query)) continue
+    if (!overlaps(ev, from, to)) continue
+
+    let day = ev.starts_on < from ? from : ev.starts_on
+    const last = ev.ends_on > to ? to : ev.ends_on
+    while (day <= last) {
+      counts[day] = (counts[day] ?? 0) + 1
+      day = shiftDays(day, 1)
+    }
+  }
+
+  return counts
+}
+
 
 /** 진행 중인 것 먼저, 그다음 시작이 빠른 순, 동률이면 종료가 임박한 순 */
 export function sortEvents(events: EventItem[], today: DateKey = todayKey()): EventItem[] {

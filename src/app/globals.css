@@ -791,6 +791,13 @@ a { color: inherit; }
   cursor: pointer;
 }
 
+/* 접힌 지점은 확대하면 풀린다는 것을 알려준다.
+   모르면 목록만 보고 정확한 위치를 못 찾는다 */
+.mapsheet__hint {
+  font-size: 12px;
+  color: var(--text-mute);
+}
+
 .mapsheet__list {
   display: flex;
   flex-direction: column;

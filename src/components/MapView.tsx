@@ -36,11 +36,25 @@ interface Props {
 /** 지도 초기 중심. 데이터가 없을 때만 쓰인다 (서울 시청) */
 const SEOUL_CENTER = { lat: 37.5665, lng: 126.978 }
 
+/** 핀을 하나로 접는 최소 간격(px). 라벨이 서로를 가리기 시작하는 거리 */
+const CLUSTER_GAP_PX = 52
+
 /**
- * 핀을 하나로 접는 최소 간격(px).
- * 라벨 핀의 최대 폭이 168px 이라 이보다 가까우면 서로를 가려 못 읽는다.
+ * 이보다 확대하면 접지 않는다 (m/px).
+ * 이만큼 들어온 사용자가 보려는 건 "여기 몇 곳"이 아니라 정확한 위치다.
+ * 라벨이 다소 겹치더라도 좌표를 그대로 보여주는 편이 맞다.
  */
-const CLUSTER_GAP_PX = 84
+const UNFOLD_M_PER_PX = 0.8
+
+/**
+ * 같은 건물·같은 카페.
+ * 한 카페에서 생카가 여럿 열리면 좌표가 사실상 같아 확대해도 갈라지지 않는다.
+ * 실측: 오늘 홍대 38건이 실제로는 25개 지점이다.
+ */
+const SAME_SPOT_KM = 0.025
+
+/** 묶음 목록에서 "확대" 를 눌렀을 때 들어갈 깊이 */
+const ZOOM_IN_LEVEL = 2
 
 interface Cluster {
   /** 대표 이벤트 id. 좌표가 아니라 id 를 키로 써야 재렌더에서 흔들리지 않는다 */
@@ -59,6 +73,8 @@ interface Cluster {
  *
  * 묶음의 좌표는 첫 항목의 좌표를 그대로 쓴다. 평균을 내면 실제로는
  * 아무것도 없는 지점을 가리키게 된다.
+ *
+ * 확대해 들어가면 접기를 멈춘다 — 그 구간의 질문은 "정확히 어디냐"로 바뀐다.
  */
 function clusterPins(pins: EventItem[], kmPerPx: number | null): Cluster[] {
   const single = (e: EventItem): Cluster => ({
@@ -69,7 +85,9 @@ function clusterPins(pins: EventItem[], kmPerPx: number | null): Cluster[] {
   })
   if (!kmPerPx) return pins.map(single)
 
-  const threshold = kmPerPx * CLUSTER_GAP_PX
+  // 충분히 확대했으면 같은 지점만 남기고 전부 편다
+  const threshold =
+    kmPerPx * 1000 <= UNFOLD_M_PER_PX ? SAME_SPOT_KM : kmPerPx * CLUSTER_GAP_PX
   const out: Cluster[] = []
   for (const ev of pins) {
     const hit = out.find(
@@ -83,10 +101,17 @@ function clusterPins(pins: EventItem[], kmPerPx: number | null): Cluster[] {
   return out
 }
 
+/** 접힌 지점 하나. 되돌아가기와 확대에 좌표가 필요하다 */
+interface ClusterRef {
+  ids: string[]
+  lat: number
+  lng: number
+}
+
 /** 미니 카드가 무엇을 보여주고 있는가 */
 type SheetState =
-  | { kind: 'event'; id: string; from?: string[] }
-  | { kind: 'cluster'; ids: string[] }
+  | { kind: 'event'; id: string; from?: ClusterRef }
+  | ({ kind: 'cluster' } & ClusterRef)
 
 /**
  * 카카오맵.
@@ -228,7 +253,9 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
       )
       el.onclick = () =>
         setSheet(
-          count > 1 ? { kind: 'cluster', ids: c.items.map((e) => e.id) } : { kind: 'event', id: head.id },
+          count > 1
+            ? { kind: 'cluster', ids: c.items.map((e) => e.id), lat: c.lat, lng: c.lng }
+            : { kind: 'event', id: head.id },
         )
 
       overlays.push(
@@ -278,7 +305,18 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
           return e ? [e] : []
         })
       : []
-  const backIds = sheet?.kind === 'event' ? sheet.from ?? null : null
+  const backRef = sheet?.kind === 'event' ? sheet.from ?? null : null
+  const clusterRef = sheet?.kind === 'cluster' ? sheet : null
+
+  /** 접힌 지점으로 파고든다. 확대하면 묶음이 풀려 개별 좌표가 드러난다 */
+  const zoomTo = useCallback((lat: number, lng: number) => {
+    const map = mapRef.current
+    const kakao = kakaoRef.current
+    if (!map || !kakao) return
+    map.setCenter(new kakao.maps.LatLng(lat, lng))
+    map.setLevel(ZOOM_IN_LEVEL)
+    setSheet(null)
+  }, [])
 
   const controls = (
     <div className="filterbar mapcontrols">
@@ -351,13 +389,13 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
             <div className="mapsheet__scroll">
               {sheetEvent ? (
                 <>
-                  {backIds && (
+                  {backRef && (
                     <button
                       type="button"
                       className="mapsheet__back"
-                      onClick={() => setSheet({ kind: 'cluster', ids: backIds })}
+                      onClick={() => setSheet({ kind: 'cluster', ...backRef })}
                     >
-                      ‹ 이 지점 {backIds.length}곳
+                      ‹ 이 지점 {backRef.ids.length}곳
                     </button>
                   )}
 
@@ -414,6 +452,9 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
                     <strong className="mapsheet__subject">이 지점 {sheetList.length}곳</strong>
                   </p>
                   <p className="mapsheet__address">{sheetList[0].place.name} 부근</p>
+                  <p className="mapsheet__hint">
+                    확대하면 같은 건물이 아닌 곳은 따로 표시돼요
+                  </p>
 
                   <ul className="mapsheet__list">
                     {sheetList.map((e) => (
@@ -425,7 +466,7 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
                             setSheet({
                               kind: 'event',
                               id: e.id,
-                              from: sheetList.map((x) => x.id),
+                              ...(clusterRef ? { from: clusterRef } : {}),
                             })
                           }
                         >
@@ -441,6 +482,16 @@ export default function MapView({ events, today, filter, onFilter, onOpen }: Pro
                       </li>
                     ))}
                   </ul>
+
+                  {clusterRef && (
+                    <button
+                      type="button"
+                      className="mapsheet__more"
+                      onClick={() => zoomTo(clusterRef.lat, clusterRef.lng)}
+                    >
+                      이 지점 확대
+                    </button>
+                  )}
                 </>
               )}
             </div>
