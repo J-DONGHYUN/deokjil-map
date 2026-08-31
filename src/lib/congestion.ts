@@ -118,15 +118,24 @@ export function minutesSince(observedAt: string, now: number = Date.now()): numb
 }
 
 /**
- * 5분마다 갱신되는 값이라 이보다 오래되면 '실시간'이라고 부를 수 없다.
- * 오래된 실시간 데이터는 없는 것보다 나쁘다.
+ * 이보다 오래되면 죽은 값으로 본다.
+ *
+ * 원본이 5분 주기라 20분으로 잡았었는데, 서울시가 발표를 늦추는 구간이 있다 —
+ * 실측으로 30분 지연을 봤다. 그때 화면이 통째로 회색이 되면 정상 데이터까지
+ * 못 쓰게 되므로 그보다 여유를 둔다. 우리 쪽 지연은 라우트의 TTL(60초)로
+ * 따로 묶여 있어서 이 값이 우리 지연을 가리지는 않는다.
  */
-export const STALE_MINUTES = 20
+export const STALE_MINUTES = 45
 
+/**
+ * 'N분 전'만 쓰면 우리 앱이 늦은 것처럼 읽힌다. 서울시가 발표한 시각을 같이
+ * 적어 지연의 출처를 분명히 한다 — "09:20 기준 · 30분 전".
+ */
 export function freshnessLabel(observedAt: string, now: number = Date.now()): string {
   const m = minutesSince(observedAt, now)
   if (!Number.isFinite(m)) return '시각 불명'
-  return m < 1 ? '방금' : `${m}분 전`
+  // 'YYYY-MM-DDTHH:mm:00+09:00' — KST 로 고정돼 있어 그대로 잘라 쓴다
+  return `${observedAt.slice(11, 16)} 기준 · ${m < 1 ? '방금' : `${m}분 전`}`
 }
 
 /** 3만 4천 ~ 3만 6천 명 → "3.4만~3.6만" */

@@ -112,7 +112,16 @@ export type LoadState = 'idle' | 'loading' | 'ready' | 'no-key' | 'error'
 let loadPromise: Promise<KakaoNamespace> | null = null
 
 /** 생성된 지도 인스턴스. ref 에 담아 두고 오버레이만 다시 그린다 */
-export type KakaoMapInstance = KakaoMap & { setBounds(bounds: KakaoBounds): void }
+export type KakaoMapInstance = KakaoMap & {
+  /** 여백(px)을 주면 그만큼 안쪽으로 맞춘다 — 시트에 가려지는 부분을 피할 때 쓴다 */
+  setBounds(
+    bounds: KakaoBounds,
+    paddingTop?: number,
+    paddingRight?: number,
+    paddingBottom?: number,
+    paddingLeft?: number,
+  ): void
+}
 
 export function loadKakaoMaps(): Promise<KakaoNamespace> {
   if (!KAKAO_JS_KEY) return Promise.reject(new Error('no-key'))

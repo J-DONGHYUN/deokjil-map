@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { District } from '@/types'
 import { DISTRICT_LABELS } from '@/lib/filters'
 import {
@@ -13,6 +13,7 @@ import CongestionDetail from './CongestionDetail'
 import {
   KAKAO_JS_KEY,
   loadKakaoMaps,
+  type KakaoBounds,
   type KakaoMapInstance,
   type KakaoNamespace,
   type KakaoPolygon,
@@ -40,6 +41,13 @@ const SEOUL_CENTER = { lat: 37.5565, lng: 126.9905 }
 const NO_DATA_FILL = '#9aa2ab'
 
 /**
+ * 구역으로 파고들 때 남기는 여백(px).
+ * 아래를 크게 잡는 이유는 혼잡도 시트가 그만큼을 가리기 때문이다 —
+ * 여백 없이 맞추면 방금 누른 구역이 시트 뒤로 숨는다.
+ */
+const FOCUS_PADDING = { top: 56, side: 40, bottom: 240 }
+
+/**
  * 혼잡도 지도.
  *
  * 혼잡도는 점이 아니라 **면**이다. 마커로 찍으면 "그 한 지점이 붐빈다"로 읽히는데
@@ -61,6 +69,29 @@ export default function LiveMap({ rows, now, onDistrictMap }: Props) {
   const [selected, setSelected] = useState<District | null>(null)
   // 5분마다 값이 갱신되는데 그때마다 화면을 다시 맞추면 확대를 할 수가 없다
   const fitted = useRef(false)
+  // 전체를 담던 범위. 시트를 닫으면 여기로 되돌린다
+  const overview = useRef<KakaoBounds | null>(null)
+
+  /** 한 구역으로 파고든다. 색을 눌렀을 때 그 구역이 화면을 채워야 뭘 봤는지 남는다 */
+  const focus = useCallback((district: District) => {
+    const map = mapRef.current
+    const kakao = kakaoRef.current
+    const spot = hotspotFor(district)
+    if (!map || !kakao || !spot) return
+
+    const b = new kakao.maps.LatLngBounds()
+    for (const ring of spot.rings) {
+      for (const [lng, lat] of ring) b.extend(new kakao.maps.LatLng(lat, lng))
+    }
+    map.setBounds(b, FOCUS_PADDING.top, FOCUS_PADDING.side, FOCUS_PADDING.bottom, FOCUS_PADDING.side)
+  }, [])
+
+  /** 시트를 닫으면 처음 보던 범위로 되돌린다. 확대된 채로 남으면 다음 구역을 못 찾는다 */
+  const unfocus = useCallback(() => {
+    setSelected(null)
+    const map = mapRef.current
+    if (map && overview.current) map.setBounds(overview.current)
+  }, [])
 
   // 지도 생성 — 한 번만
   useEffect(() => {
@@ -126,7 +157,10 @@ export default function LiveMap({ rows, now, onDistrictMap }: Props) {
 
         // 색을 누르면 그 구역의 혼잡도를 편다. 지도를 갈아타지 않는다 —
         // 여기서 알고 싶은 건 "얼마나 붐비나"지 "무슨 행사가 있나"가 아니다
-        kakao.maps.event.addListener(polygon, 'click', () => setSelected(district))
+        kakao.maps.event.addListener(polygon, 'click', () => {
+          setSelected(district)
+          focus(district)
+        })
         kakao.maps.event.addListener(polygon, 'mouseover', () =>
           polygon.setOptions({ fillOpacity: Math.min(base + 0.18, 0.7) }),
         )
@@ -139,6 +173,7 @@ export default function LiveMap({ rows, now, onDistrictMap }: Props) {
       drawn++
     }
 
+    if (!bounds.isEmpty()) overview.current = bounds
     if (!fitted.current && drawn > 1 && !bounds.isEmpty()) {
       map.setBounds(bounds)
       fitted.current = true
@@ -147,7 +182,7 @@ export default function LiveMap({ rows, now, onDistrictMap }: Props) {
     return () => {
       for (const p of polygons) p.setMap(null)
     }
-  }, [rows, state])
+  }, [rows, state, focus])
 
   // 값이 사라진 구역의 시트가 남지 않도록 한다
   const picked = useMemo(
@@ -195,7 +230,7 @@ export default function LiveMap({ rows, now, onDistrictMap }: Props) {
           <button
             type="button"
             className="mapsheet__close"
-            onClick={() => setSelected(null)}
+            onClick={unfocus}
             aria-label="닫기"
           >
             ✕

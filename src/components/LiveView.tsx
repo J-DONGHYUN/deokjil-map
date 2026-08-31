@@ -21,8 +21,12 @@ interface Props {
   onDistrictMap: (district: District) => void
 }
 
-/** 서울시 원본이 5분 주기다. 그보다 자주 물어도 새 값이 없다 */
-const POLL_MS = 5 * 60 * 1000
+/**
+ * 서울시 원본이 5분 주기지만, 우리 쪽 TTL(60초)과 위상이 어긋나면 그만큼 더
+ * 밀린다. 3분으로 좁혀 체감 지연을 줄인다 — 라우트가 TTL 안에서는 서울시를
+ * 다시 두드리지 않으므로 호출 수는 크게 늘지 않는다.
+ */
+const POLL_MS = 3 * 60 * 1000
 
 const FAIL_TEXT: Record<string, string> = {
   'need-key': '인증키가 있어야 조회돼요',
@@ -66,12 +70,15 @@ export default function LiveView({ events, today, onDistrictMap }: Props) {
       .sort((a, b) => b.count - a.count)
   }, [events, today])
 
-  const load = useCallback(async () => {
+  // fresh=true 는 사용자가 새로고침을 눌렀을 때다. 서버 TTL 을 건너뛴다
+  const load = useCallback(async (fresh = false) => {
     if (targets.length === 0) return
     const results = await Promise.all(
       targets.map(async ({ district }) => {
         try {
-          const res = await fetch(`/api/congestion?district=${district}`)
+          const res = await fetch(
+            `/api/congestion?district=${district}${fresh ? '&fresh=1' : ''}`,
+          )
           if (!res.ok) return [district, null] as const
           return [district, (await res.json()) as CongestionResult] as const
         } catch {
@@ -88,7 +95,7 @@ export default function LiveView({ events, today, onDistrictMap }: Props) {
 
   useEffect(() => {
     load()
-    const id = setInterval(load, POLL_MS)
+    const id = setInterval(() => load(), POLL_MS)
     return () => clearInterval(id)
   }, [load])
 
@@ -116,7 +123,7 @@ export default function LiveView({ events, today, onDistrictMap }: Props) {
           {/* 우리가 잰 값이 아니다. 출처를 화면에 남긴다 (CLAUDE.md) */}
           <p className="livehead__note">서울시 실시간 도시데이터 · 5분마다 갱신</p>
         </div>
-        <button type="button" className="livehead__refresh" onClick={load}>
+        <button type="button" className="livehead__refresh" onClick={() => load(true)}>
           새로고침
         </button>
       </div>
