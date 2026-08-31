@@ -3,12 +3,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { District, EventItem } from '@/types'
 import { DISTRICT_LABELS, filterEvents, groupByDistrict } from '@/lib/filters'
+import CongestionDetail from './CongestionDetail'
 import LiveMap, { type LiveRow } from './LiveMap'
 import {
   CROWD_SLUG,
   STALE_MINUTES,
-  formatHeadcount,
-  freshnessLabel,
   hasHotspot,
   hotspotFor,
   minutesSince,
@@ -157,7 +156,7 @@ export default function LiveView({ events, today, onDistrictMap }: Props) {
           다른 날짜의 행사는 홈에서 볼 수 있어요.
         </p>
       ) : mode === 'map' ? (
-        <LiveMap rows={rows} onDistrictMap={onDistrictMap} />
+        <LiveMap rows={rows} now={tick} onDistrictMap={onDistrictMap} />
       ) : (
         <div className="rows">
           {rows.map(({ district, count, result }) => {
@@ -178,10 +177,7 @@ export default function LiveView({ events, today, onDistrictMap }: Props) {
               )
             }
 
-            const mins = minutesSince(result.observedAt, tick)
-            const stale = mins > STALE_MINUTES
-            // 지금보다 한산해지는 첫 시각. "그럼 언제 가지"에 한 줄로 답한다
-            const better = result.forecast.find((f) => f.max < result.min)
+            const stale = minutesSince(result.observedAt, tick) > STALE_MINUTES
 
             return (
               <button
@@ -190,36 +186,7 @@ export default function LiveView({ events, today, onDistrictMap }: Props) {
                 className={`livecard livecard--${CROWD_SLUG[result.level]} ${stale ? 'livecard--stale' : ''}`}
                 onClick={() => onDistrictMap(district)}
               >
-                <div className="livecard__head">
-                  <strong className="livecard__spot">{result.name}</strong>
-                  <span className={`livecard__level livecard__level--${CROWD_SLUG[result.level]}`}>
-                    {result.level}
-                  </span>
-                </div>
-
-                <p className="livecard__where">
-                  {DISTRICT_LABELS[district]} · 오늘 {count}곳
-                </p>
-
-                <p className="livecard__figure">
-                  {formatHeadcount(result.min, result.max)}
-                  {result.visitorRate > 0 && (
-                    <span className="livecard__visitor"> · 방문자 {Math.round(result.visitorRate)}%</span>
-                  )}
-                </p>
-
-                {result.message && <p className="livecard__msg">{result.message}</p>}
-
-                {better && (
-                  <p className="livecard__fcst">
-                    {better.time}쯤 한산해져요 · {better.level}
-                  </p>
-                )}
-
-                <p className="livecard__time">
-                  {stale ? '갱신이 멈췄어요 · ' : ''}
-                  {freshnessLabel(result.observedAt, tick)}
-                </p>
+                <CongestionDetail district={district} count={count} data={result} now={tick} />
               </button>
             )
           })}
