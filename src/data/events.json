@@ -46,29 +46,6 @@
     "goods": []
   },
   {
-    "id": "om_15402",
-    "place": {
-      "name": "톤앤매너",
-      "address": "서울특별시 마포구 와우산로29가길 13 2층 톤앤매너",
-      "lat": 37.554302,
-      "lng": 126.9287165,
-      "district": "hongdae",
-      "kind": "cafe"
-    },
-    "subject": "모카",
-    "title": "아일릿 · 모카 · 잇츠 민트걸 모카!",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-05",
-    "ends_on": "2026-10-08",
-    "perks": "특전 12종",
-    "source_url": "https://x.com/ILLITDAY",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15402",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/9e238669-81b3-47c3-b10f-70e43354ce62-1788555085029.jpeg",
-    "trust": "parsed",
-    "goods": []
-  },
-  {
     "id": "om_15645",
     "place": {
       "name": "델룰루",
@@ -870,7 +847,7 @@
     "source_url": "https://x.com/jameshbd051014",
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15539",
     "image_url": "https://img2.offmate.kr/birthday-cafe/045f5084-1de4-4392-97ad-35973b387801-1789643260177.jpeg",
-    "trust": "parsed",
+    "trust": "partner",
     "goods": []
   },
   {
@@ -1098,7 +1075,7 @@
     "perks": "특전 7종",
     "source_url": "https://www.instagram.com/bol4.archive",
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15381",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/8a2b0443-60b2-4a8d-8ba4-c6afac320b31-1788410528858.png",
+    "image_url": "https://img2.offmate.kr/artist-profiles/prod/7e1fdca5-dd43-4fbd-a9ee-80b13d7ea7d4-1791506363526.jpeg",
     "trust": "parsed",
     "goods": []
   },
@@ -1374,6 +1351,52 @@
     "source_url": "https://x.com/0818STUDIO",
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15590",
     "image_url": "https://img2.offmate.kr/birthday-cafe/89d3fa16-7a6a-47b5-86bf-121f4994e94c-1790059841621.jpeg",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "om_15789",
+    "place": {
+      "name": "카페 몽글",
+      "address": "서울특별시 마포구 와우산로29라길 21 2층",
+      "lat": 37.5548838,
+      "lng": 126.9268952,
+      "district": "hongdae",
+      "kind": "cafe"
+    },
+    "subject": "전웅",
+    "title": "에이비식스 · 전웅 · Our Tomorow",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-10-14",
+    "ends_on": "2026-10-15",
+    "perks": "특전 3종",
+    "source_url": "https://x.com/_forwoong_",
+    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15789",
+    "image_url": "https://img2.offmate.kr/birthday-cafe/ba5fec25-73f7-4008-be46-a9116a4198df-1791585702431.png",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "om_15784",
+    "place": {
+      "name": "롱브르378",
+      "address": "서울특별시 용산구 한강대로10길 11-54 롱브르378",
+      "lat": 37.5245671,
+      "lng": 126.9648281,
+      "district": "yongsan",
+      "kind": "cafe"
+    },
+    "subject": "EVAN",
+    "title": "EVAN · Across The HeeVerse",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-10-14",
+    "ends_on": "2026-10-17",
+    "perks": "특전 3종",
+    "source_url": "https://x.com/lhschinabar",
+    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15784",
+    "image_url": "https://img2.offmate.kr/birthday-cafe/0785d1bb-f8cc-4bc9-8194-a69ea5aa9618-1791546304965.jpeg",
     "trust": "parsed",
     "goods": []
   },
@@ -1786,6 +1809,29 @@
     "source_url": "https://x.com/Ren_NSWER_Lily",
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15531",
     "image_url": "https://img2.offmate.kr/birthday-cafe/5ab82c5c-eff2-4d1c-a1da-d11d0024f765-1789632001604.jpeg",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "om_15782",
+    "place": {
+      "name": "하이타운서울",
+      "address": "서울특별시 마포구 와우산로29다길 10 지1층 101호",
+      "lat": 37.5550818,
+      "lng": 126.9276726,
+      "district": "hongdae",
+      "kind": "cafe"
+    },
+    "subject": "이한",
+    "title": "보이넥스트도어 · 이한 · 천사견을 부탁해!",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-10-17",
+    "ends_on": "2026-10-20",
+    "perks": "특전 5종",
+    "source_url": "https://x.com/boinxtdo",
+    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15782",
+    "image_url": "https://img2.offmate.kr/birthday-cafe/35038b9a-98c3-4849-9fd8-c39ae20eb491-1791524947312.jpeg",
     "trust": "parsed",
     "goods": []
   },
@@ -2936,6 +2982,52 @@
     "source_url": "https://x.com/TAKE_NUMBER_TWO",
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15342",
     "image_url": "https://img2.offmate.kr/birthday-cafe/29df0dc4-fe80-4632-ab25-494ee0f31b0b-1788185482096.jpeg",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "om_15788",
+    "place": {
+      "name": "카페헤이",
+      "address": "서울특별시 마포구 와우산로29마길 10 1층",
+      "lat": 37.5556389,
+      "lng": 126.9266043,
+      "district": "hongdae",
+      "kind": "cafe"
+    },
+    "subject": "리노",
+    "title": "스트레이키즈 · 리노 · 스키주라기공원 티리노사우르스",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-10-23",
+    "ends_on": "2026-10-25",
+    "perks": "특전 11종",
+    "source_url": "https://x.com/skzurassic_park",
+    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15788",
+    "image_url": "https://img2.offmate.kr/birthday-cafe/6c84df9d-be3c-4106-8c3e-7fddd2df8254-1791564630133.jpeg",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "om_15787",
+    "place": {
+      "name": "신드롬",
+      "address": "서울특별시 마포구 와우산로29길 19 2층",
+      "lat": 37.5548785,
+      "lng": 126.9287544,
+      "district": "hongdae",
+      "kind": "cafe"
+    },
+    "subject": "ATEEZ",
+    "title": "ATEEZ · ATEEZ · ATEEZ 8th anniversary ",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-10-23",
+    "ends_on": "2026-10-24",
+    "perks": "특전 5종",
+    "source_url": "https://x.com/HBD__i",
+    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15787",
+    "image_url": "https://img2.offmate.kr/birthday-cafe/c5c0bdf2-ddcc-454c-9671-198b3c98594f-1791554667203.jpeg",
     "trust": "parsed",
     "goods": []
   },
