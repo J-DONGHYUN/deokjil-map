@@ -23,98 +23,6 @@
     "goods": []
   },
   {
-    "id": "om_15595",
-    "place": {
-      "name": "블랙드럼 용산점",
-      "address": "서울특별시 용산구 한강대로10길 11-21 1층 블랙드럼",
-      "lat": 37.5248108,
-      "lng": 126.9647571,
-      "district": "yongsan",
-      "kind": "cafe"
-    },
-    "subject": "제임스",
-    "title": "코르티스 · 제임스 · James Birthday Cheers",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-14",
-    "ends_on": "2026-10-18",
-    "perks": "특전 6종",
-    "source_url": "https://x.com/KR_RRRR_10",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15595",
-    "image_url": "https://img2.offmate.kr/artist-profiles/prod/a0f5e656-e4f9-45c1-820d-b98deacd87d8-1791266766187.jpeg",
-    "trust": "parsed",
-    "goods": []
-  },
-  {
-    "id": "om_15681",
-    "place": {
-      "name": "봄날 플라워 카페",
-      "address": "서울특별시 용산구 한강대로10길 11-18 1층",
-      "lat": 37.5242242,
-      "lng": 126.9644918,
-      "district": "yongsan",
-      "kind": "cafe"
-    },
-    "subject": "EVAN",
-    "title": "EVAN · 에반의 숲",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-15",
-    "ends_on": "2026-10-18",
-    "perks": "특전 2종",
-    "source_url": "https://x.com/evansforest1015",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15681",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/c4a41e68-6192-4cb6-aa44-90fef0360e8c-1790934924320.jpeg",
-    "trust": "parsed",
-    "goods": []
-  },
-  {
-    "id": "om_15521",
-    "place": {
-      "name": "펀치드렁크러브",
-      "address": "서울특별시 마포구 와우산로15길 38 3층",
-      "lat": 37.5491141,
-      "lng": 126.9212316,
-      "district": "hongdae",
-      "kind": "cafe"
-    },
-    "subject": "EVAN",
-    "title": "EVAN · asevanwish",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-15",
-    "ends_on": "2026-10-18",
-    "perks": "특전 5종",
-    "source_url": "https://x.com/asevanwish",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15521",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/905c5fac-8c2a-47f7-ac77-7d0a14872b2b-1789565675984.jpeg",
-    "trust": "parsed",
-    "goods": []
-  },
-  {
-    "id": "om_15727",
-    "place": {
-      "name": "니커피",
-      "address": "서울특별시 중구 동호로 241 장충체육관 2층",
-      "lat": 37.5581865,
-      "lng": 127.00679,
-      "district": "myeongdong",
-      "kind": "cafe"
-    },
-    "subject": "Highlight",
-    "title": "하이라이트 · Highlight · 오늘의 하이라이트 농도 1016%",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-16",
-    "ends_on": "2026-10-18",
-    "perks": "특전 8종",
-    "source_url": "https://x.com/Always_forHL",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15727",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/5827c352-5451-450d-9a74-15d657395e6d-1791283748845.jpeg",
-    "trust": "parsed",
-    "goods": []
-  },
-  {
     "id": "om_15708",
     "place": {
       "name": "젤라떼리아피오니",
@@ -134,74 +42,6 @@
     "source_url": "https://x.com/Everlastinlove",
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15708",
     "image_url": "https://img2.offmate.kr/birthday-cafe/5237f57e-69d7-4cc8-9721-e6499e06a4d4-1791189790670.jpeg",
-    "trust": "parsed",
-    "goods": []
-  },
-  {
-    "id": "om_15635",
-    "place": {
-      "name": "카페라래",
-      "address": "서울특별시 마포구 와우산로29마길 7 1층 102호",
-      "lat": 37.5555882,
-      "lng": 126.9267852,
-      "district": "hongdae",
-      "kind": "cafe"
-    },
-    "subject": "QWER",
-    "title": "QWER · QWER · THIRD VERSE",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-16",
-    "ends_on": "2026-10-18",
-    "perks": "특전 14종",
-    "source_url": "https://x.com/qwer_luv___",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15635",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/65dc5267-c988-480d-bdbb-285af777edfc-1790517663666.png",
-    "trust": "parsed",
-    "goods": []
-  },
-  {
-    "id": "om_15584",
-    "place": {
-      "name": "커피집",
-      "address": "서울 중구 동호로20길 6",
-      "lat": 37.55835104880329,
-      "lng": 127.00856076504044,
-      "district": "myeongdong",
-      "kind": "cafe"
-    },
-    "subject": "Highlight",
-    "title": "하이라이트 · Highlight · 오아시스",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-16",
-    "ends_on": "2026-10-18",
-    "source_url": "https://x.com/Go_zzocco",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15584",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/4523cf44-aa94-412f-9cbb-b8cb283fe904-1789966335110.jpeg",
-    "trust": "parsed",
-    "goods": []
-  },
-  {
-    "id": "om_15531",
-    "place": {
-      "name": "톤앤매너",
-      "address": "서울특별시 마포구 와우산로29가길 13 2층 톤앤매너",
-      "lat": 37.554302,
-      "lng": 126.9287165,
-      "district": "hongdae",
-      "kind": "cafe"
-    },
-    "subject": "릴리",
-    "title": "엔믹스 · 릴리 · Every Frame, a Memory of Lily",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-16",
-    "ends_on": "2026-10-18",
-    "perks": "특전 9종",
-    "source_url": "https://x.com/Ren_NSWER_Lily",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15531",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/5ab82c5c-eff2-4d1c-a1da-d11d0024f765-1789632001604.jpeg",
     "trust": "parsed",
     "goods": []
   },
@@ -271,29 +111,6 @@
     "source_url": "https://x.com/BNDSakuraaaa_y",
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15847",
     "image_url": "https://img2.offmate.kr/birthday-cafe/3bcf0c51-f0a9-4ccb-ac2f-523ed1222fb0-1791971021015.jpeg",
-    "trust": "parsed",
-    "goods": []
-  },
-  {
-    "id": "om_15835",
-    "place": {
-      "name": "마이클로버",
-      "address": "서울특별시 마포구 와우산로29라길 22 4층",
-      "lat": 37.5549328,
-      "lng": 126.9267345,
-      "district": "hongdae",
-      "kind": "cafe"
-    },
-    "subject": "QWER",
-    "title": "QWER · QWER · The Third Autumn",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-17",
-    "ends_on": "2026-10-18",
-    "perks": "특전 6종",
-    "source_url": "https://x.com/qwer_3rd",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15835",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/93d7a8f4-ab05-498c-832e-f49358f3a743-1791906083504.jpeg",
     "trust": "parsed",
     "goods": []
   },
@@ -390,52 +207,6 @@
     "goods": []
   },
   {
-    "id": "om_15761",
-    "place": {
-      "name": "카페나루",
-      "address": "서울 광진구 광장로1길 18",
-      "lat": 37.5476068218147,
-      "lng": 127.10226630034,
-      "district": "etc",
-      "kind": "cafe"
-    },
-    "subject": "릴리",
-    "title": "엔믹스 · 릴리 · 101.7Mhz",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-17",
-    "ends_on": "2026-10-18",
-    "perks": "특전 9종",
-    "source_url": "https://x.com/Lilyday1017",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15761",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/80b4b1f5-5ffd-4bb8-9d13-f9ee36c9f954-1791381027329.jpeg",
-    "trust": "parsed",
-    "goods": []
-  },
-  {
-    "id": "om_15760",
-    "place": {
-      "name": "신드롬",
-      "address": "서울특별시 마포구 와우산로29길 19 2층",
-      "lat": 37.5548785,
-      "lng": 126.9287544,
-      "district": "hongdae",
-      "kind": "cafe"
-    },
-    "subject": "이한",
-    "title": "보이넥스트도어 · 이한 · 이리온즈를 부탁해",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-17",
-    "ends_on": "2026-10-18",
-    "perks": "특전 4종",
-    "source_url": "https://x.com/HBD_ooo",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15760",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/5a30d70e-9bfa-4840-9dd5-127b9fd60113-1791380949047.jpeg",
-    "trust": "parsed",
-    "goods": []
-  },
-  {
     "id": "om_15758",
     "place": {
       "name": "카페 몽글",
@@ -501,29 +272,6 @@
     "source_url": "https://x.com/Ouryouth_3410",
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15748",
     "image_url": "https://img2.offmate.kr/birthday-cafe/f8b09f95-db51-448c-b9da-d166e3218250-1791354418235.jpeg",
-    "trust": "parsed",
-    "goods": []
-  },
-  {
-    "id": "om_15747",
-    "place": {
-      "name": "신드롬",
-      "address": "서울특별시 마포구 와우산로29길 19 2층",
-      "lat": 37.5548785,
-      "lng": 126.9287544,
-      "district": "hongdae",
-      "kind": "cafe"
-    },
-    "subject": "리우",
-    "title": "보이넥스트도어 · 리우 · 이리온즈를 부탁해!",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-17",
-    "ends_on": "2026-10-18",
-    "perks": "특전 1종",
-    "source_url": "https://x.com/HBD_ooo",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15747",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/4a26b56b-f085-4160-9985-548511aeca6e-1791354324681.jpeg",
     "trust": "parsed",
     "goods": []
   },
@@ -685,29 +433,6 @@
     "source_url": "https://x.com/foru1020",
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15711",
     "image_url": "https://img2.offmate.kr/birthday-cafe/e6c2c6aa-5eda-4baa-939e-4b85e583ea4c-1791196665878.jpeg",
-    "trust": "parsed",
-    "goods": []
-  },
-  {
-    "id": "om_15709",
-    "place": {
-      "name": "카페치어럽",
-      "address": "서울특별시 마포구 잔다리로 30-32 1층",
-      "lat": 37.5519636,
-      "lng": 126.9200804,
-      "district": "hapjeong",
-      "kind": "cafe"
-    },
-    "subject": "릴리",
-    "title": "엔믹스 · 릴리 · Golden Gamja Recipe",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-17",
-    "ends_on": "2026-10-18",
-    "perks": "특전 7종",
-    "source_url": "https://x.com/gamjarecipe",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15709",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/eb9ef6c7-a858-4c72-a8da-a99279f1bc79-1791190163530.jpeg",
     "trust": "parsed",
     "goods": []
   },
@@ -896,6 +621,29 @@
     "goods": []
   },
   {
+    "id": "om_15622",
+    "place": {
+      "name": "오브오",
+      "address": "서울 마포구 양화로7안길 42",
+      "lat": 37.553488029431605,
+      "lng": 126.91530102022136,
+      "district": "hapjeong",
+      "kind": "cafe"
+    },
+    "subject": "라미",
+    "title": "베이비몬스터 · 라미 · Page Of Rami",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-10-17",
+    "ends_on": "2026-10-19",
+    "perks": "특전 7종",
+    "source_url": "https://x.com/BM_Eagles",
+    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15622",
+    "image_url": "https://img2.offmate.kr/birthday-cafe/6cea272d-78f1-49bc-9439-ebfc7f88f981-1790407011358.png",
+    "trust": "partner",
+    "goods": []
+  },
+  {
     "id": "om_15612",
     "place": {
       "name": "문스트럭러브",
@@ -962,52 +710,6 @@
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15565",
     "image_url": "https://img2.offmate.kr/birthday-cafe/b5d2e9e1-e416-4c2e-b2ff-dcbefffc65c8-1789737882669.jpeg",
     "trust": "parsed",
-    "goods": []
-  },
-  {
-    "id": "om_15517",
-    "place": {
-      "name": "카페 이이키",
-      "address": "서울특별시 마포구 와우산로29길 4-15 1층",
-      "lat": 37.555108,
-      "lng": 126.9293344,
-      "district": "hongdae",
-      "kind": "cafe"
-    },
-    "subject": "테루",
-    "title": "베이온 · 테루 · Lv.1 테루짱 키우기",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-17",
-    "ends_on": "2026-10-18",
-    "perks": "특전 7종",
-    "source_url": "https://x.com/M_CHIKUNG",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15517",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/00511bce-e664-4205-a4b9-b6ea47a73c91-1789544672158.jpeg",
-    "trust": "parsed",
-    "goods": []
-  },
-  {
-    "id": "om_15481",
-    "place": {
-      "name": "스튜디오앱트 STUDIOAPT",
-      "address": "서울특별시 마포구 동교로30길 19 2층(2.5층) 오른쪽 카페",
-      "lat": 37.5600043,
-      "lng": 126.9251705,
-      "district": "hongdae",
-      "kind": "cafe"
-    },
-    "subject": "리우",
-    "title": "보이넥스트도어 · 리우 · Falling in Riwoo",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-17",
-    "ends_on": "2026-10-18",
-    "perks": "특전 9종",
-    "source_url": "https://x.com/falling_in_liuu",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15481",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/33101ee3-8e34-4a25-8ce3-74b0fbcd7e25-1789221554211.png",
-    "trust": "partner",
     "goods": []
   },
   {
@@ -1261,52 +963,6 @@
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15525",
     "image_url": "https://img2.offmate.kr/birthday-cafe/12f859c3-5361-46c3-bbcb-7660147c827e-1789595995397.jpeg",
     "trust": "parsed",
-    "goods": []
-  },
-  {
-    "id": "om_15061",
-    "place": {
-      "name": "CAFE07",
-      "address": "서울특별시 마포구 신촌로2안길 40 지하1층",
-      "lat": 37.5568424,
-      "lng": 126.9291719,
-      "district": "hongdae",
-      "kind": "cafe"
-    },
-    "subject": "이한",
-    "title": "보이넥스트도어 · 이한 · BUBBLING BUBBLES",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-20",
-    "ends_on": "2026-10-25",
-    "perks": "특전 8종",
-    "source_url": "https://x.com/bubbling12on",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15061",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/f0fa7211-9b6c-45ae-82ee-e88a1c91bab9-1786244203165.jpeg",
-    "trust": "partner",
-    "goods": []
-  },
-  {
-    "id": "om_15059",
-    "place": {
-      "name": "CAFE07",
-      "address": "서울특별시 마포구 신촌로2안길 40 지하1층",
-      "lat": 37.5568424,
-      "lng": 126.9291719,
-      "district": "hongdae",
-      "kind": "cafe"
-    },
-    "subject": "리우",
-    "title": "보이넥스트도어 · 리우 · BUBBLING BUBBLES",
-    "subject_type": "idol",
-    "kind": "birthday_cafe",
-    "starts_on": "2026-10-20",
-    "ends_on": "2026-10-25",
-    "perks": "특전 8종",
-    "source_url": "https://x.com/bubbling12on",
-    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15059",
-    "image_url": "https://img2.offmate.kr/birthday-cafe/b5f74340-32ae-4580-8789-e0ed877b3bc1-1786244150663.jpeg",
-    "trust": "partner",
     "goods": []
   },
   {
@@ -1602,7 +1258,7 @@
     "starts_on": "2026-10-22",
     "ends_on": "2026-10-25",
     "perks": "특전 13종",
-    "source_url": "https://x.com/D2RMySummer",
+    "source_url": "https://x.com/DearMySummer_R",
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15403",
     "image_url": "https://img2.offmate.kr/artist-profiles%2Fprod%2F28802ca1-e60a-4a7f-97b9-227eaa08aa3d-1790521022909.jpeg",
     "trust": "parsed",
@@ -2161,6 +1817,29 @@
     "goods": []
   },
   {
+    "id": "om_15732",
+    "place": {
+      "name": "스웨이드 베이커리 청담",
+      "address": "서울특별시 강남구 도산대로62길 26 1층",
+      "lat": 37.5217886,
+      "lng": 127.0427822,
+      "district": "gangnam",
+      "kind": "cafe"
+    },
+    "subject": "즈언",
+    "title": "아홉 · 즈언 · HAPPY CHIHEN DAY vol.2 :雙十年華",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-10-28",
+    "ends_on": "2026-10-28",
+    "perks": "특전 3종",
+    "source_url": "https://x.com/tokkiwink_",
+    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15732",
+    "image_url": "https://img2.offmate.kr/birthday-cafe/bc7236cf-9935-4730-947f-2e8734d3a7b4-1791294710107.jpeg",
+    "trust": "partner",
+    "goods": []
+  },
+  {
     "id": "om_15606",
     "place": {
       "name": "톤앤매너",
@@ -2180,6 +1859,29 @@
     "source_url": "https://x.com/fqqh2c",
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15606",
     "image_url": "https://img2.offmate.kr/birthday-cafe/ce1d5131-b6d7-4bae-8c67-3cf03525f5c0-1790197085186.jpeg",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "om_15901",
+    "place": {
+      "name": "악센트 와우",
+      "address": "서울특별시 마포구 와우산로29라길 22 지1층",
+      "lat": 37.5549328,
+      "lng": 126.9267345,
+      "district": "hongdae",
+      "kind": "cafe"
+    },
+    "subject": "지젤",
+    "title": "aespa · 지젤 · 애리의 레모네이드 테이블",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-10-29",
+    "ends_on": "2026-10-31",
+    "perks": "특전 9종",
+    "source_url": "https://x.com/napa7867",
+    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15901",
+    "image_url": "https://img2.offmate.kr/birthday-cafe/7841d361-d11e-471d-9ce9-83f66eefecb7-1792383644152.jpeg",
     "trust": "parsed",
     "goods": []
   },
@@ -2268,7 +1970,7 @@
     "kind": "birthday_cafe",
     "starts_on": "2026-10-31",
     "ends_on": "2026-11-01",
-    "perks": "특전 6종",
+    "perks": "특전 8종",
     "source_url": "https://x.com/PP_HAMINI1101",
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15792",
     "image_url": "https://img2.offmate.kr/birthday-cafe/f1f6ff82-1a4b-4a60-9737-a2edb49a24aa-1791609814269.jpeg",
@@ -2371,10 +2073,10 @@
     "id": "om_15671",
     "place": {
       "name": "달다구리",
-      "address": "서울특별시 마포구 월드컵로8길 17-13 2층",
-      "lat": 37.5534998,
-      "lng": 126.9130801,
-      "district": "hapjeong",
+      "address": "서울 마포구 와우산로29마길 10-4",
+      "lat": 37.5557272868197,
+      "lng": 126.926474394094,
+      "district": "hongdae",
       "kind": "cafe"
     },
     "subject": "하민",
@@ -2700,7 +2402,7 @@
       "kind": "cafe"
     },
     "subject": "신유",
-    "title": "투어스 · 신유 · ‧꒰ა  신유네 타코야키  ໒꒱ ‧+ ̊",
+    "title": "투어스 · 신유 · 신유네 타코야키",
     "subject_type": "idol",
     "kind": "birthday_cafe",
     "starts_on": "2026-11-06",
@@ -3150,6 +2852,29 @@
     "goods": []
   },
   {
+    "id": "om_15906",
+    "place": {
+      "name": "봄마켓",
+      "address": "서울특별시 용산구 한강대로10길 11-46 지상1~2층",
+      "lat": 37.5244912,
+      "lng": 126.9647418,
+      "district": "yongsan",
+      "kind": "cafe"
+    },
+    "subject": "홍은채",
+    "title": "르세라핌 · 홍은채 · 21",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-11-09",
+    "ends_on": "2026-11-11",
+    "perks": "특전 6종",
+    "source_url": "https://x.com/EUNCHAE21ISSUE",
+    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15906",
+    "image_url": "https://img2.offmate.kr/birthday-cafe/ca3246f1-4e41-44ad-b9ae-0ade632620dd-1792406184430.jpeg",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
     "id": "om_15804",
     "place": {
       "name": "톤앤매너",
@@ -3169,6 +2894,29 @@
     "source_url": "https://x.com/u_seon23887",
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15804",
     "image_url": "https://img2.offmate.kr/birthday-cafe/e27dd70f-7716-4277-b62e-72029e271264-1791715016837.jpeg",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "om_15900",
+    "place": {
+      "name": "마린커피 빅히트사옥점",
+      "address": "서울특별시 용산구 한강대로10길 11-48 1층 마린커피",
+      "lat": 37.5244912,
+      "lng": 126.9647786,
+      "district": "yongsan",
+      "kind": "cafe"
+    },
+    "subject": "제이크",
+    "title": "엔하이픈 · 제이크 · MY ADORABLE FUGITIVE, JAKE",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-11-13",
+    "ends_on": "2026-11-15",
+    "perks": "특전 7종",
+    "source_url": "https://x.com/puppy_yunik",
+    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15900",
+    "image_url": "https://img2.offmate.kr/birthday-cafe/fac4d657-732e-42b2-ba33-4e453de3ede4-1792383591032.jpeg",
     "trust": "parsed",
     "goods": []
   },
@@ -3559,6 +3307,29 @@
     "source_url": "https://x.com/milkyboy_sh",
     "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15801",
     "image_url": "https://img2.offmate.kr/birthday-cafe/50321a91-9c1c-4f7f-922f-fe63da25269c-1791679941369.jpeg",
+    "trust": "parsed",
+    "goods": []
+  },
+  {
+    "id": "om_15607",
+    "place": {
+      "name": "홍대갤러리 키르큐펠",
+      "address": "서울특별시 마포구 와우산로25길 26 1층, 2층 홍대갤러리 키르큐펠",
+      "lat": 37.5544453,
+      "lng": 126.926069,
+      "district": "hongdae",
+      "kind": "cafe"
+    },
+    "subject": "강현",
+    "title": "원위 · 강현 · 夢想 : 몽상",
+    "subject_type": "idol",
+    "kind": "birthday_cafe",
+    "starts_on": "2026-11-20",
+    "ends_on": "2026-11-21",
+    "perks": "특전 4종",
+    "source_url": "https://x.com/Pluto__ooo",
+    "listing_url": "https://www.offmate.kr/place/birthday-cafe/detail/15607",
+    "image_url": "https://img2.offmate.kr/birthday-cafe/ff293538-17c6-462d-a781-eb9939ce3704-1790212737978.jpeg",
     "trust": "parsed",
     "goods": []
   },
